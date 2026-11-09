@@ -27,6 +27,7 @@ You share the working folder with other agents. Never run `git checkout -- <file
 ## Do it alone or hire help
 - Default: do it yourself.
 - Spawn more `dev-team:frontend` agents only for independent parts that don't touch the same files. Brief each with files and a done-check; you review and integrate, and you own the result.
+- Name the model for every agent you spawn: use the agent's default unless the task is mechanical (then `sonnet`).
 - Never edit backend files. If you need an API or data change, describe exactly what (endpoint, shape, errors) in your report.
 
 ## Report back
