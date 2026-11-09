@@ -1,0 +1,134 @@
+diff --git a/src/app.js b/src/app.js
+index f1cffbd..f616dbb 100644
+--- a/src/app.js
++++ b/src/app.js
+@@ -1,4 +1,4 @@
+-import { addHabit, toggleDone, todayKey } from "./habits.js";
++import { addHabit, toggleDone, todayKey, currentStreak } from "./habits.js";
+ 
+ const KEY = "tally.habits";
+ let habits = JSON.parse(localStorage.getItem(KEY) || "[]");
+@@ -28,8 +28,16 @@ function render() {
+       render();
+     });
+     const label = document.createElement("span");
++    label.className = "name";
+     label.textContent = h.name;
+     li.append(box, label);
++    const n = currentStreak(h.done, today);
++    if (n > 0) {
++      const streak = document.createElement("span");
++      streak.className = "streak";
++      streak.textContent = n === 1 ? "1 day" : `${n} days`;
++      li.append(streak);
++    }
+     list.append(li);
+   }
+ }
+diff --git a/src/habits.js b/src/habits.js
+index 74b2c81..b21b2c5 100644
+--- a/src/habits.js
++++ b/src/habits.js
+@@ -17,3 +17,20 @@ export function toggleDone(habits, id, day) {
+     h.id !== id ? h : { ...h, done: h.done.includes(day) ? h.done.filter((d) => d !== day) : [...h.done, day] }
+   );
+ }
++
++// Days in a row done, ending today or (if today isn't ticked yet) yesterday. Future dates never count.
++export function currentStreak(done, today) {
++  const days = new Set(done);
++  // Previous calendar day via local y/m/d, not -24h, so DST days step correctly.
++  const prev = (key) => {
++    const [y, m, d] = key.split("-").map(Number);
++    return todayKey(new Date(y, m - 1, d - 1));
++  };
++  let day = days.has(today) ? today : prev(today);
++  let n = 0;
++  while (days.has(day)) {
++    n++;
++    day = prev(day);
++  }
++  return n;
++}
+diff --git a/src/styles.css b/src/styles.css
+index c4d73c7..a17bfee 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -8,4 +8,6 @@ input:not([type]) { flex: 1; padding: 8px 10px; border: 1px solid var(--line); b
+ button { padding: 8px 14px; border: 0; border-radius: 6px; background: var(--accent); color: white; font: inherit; }
+ ul { list-style: none; padding: 0; margin: 0; }
+ li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
++.name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
++.streak { margin-left: auto; color: var(--ink); opacity: 0.7; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+ .empty { color: #777; }
+diff --git a/test/habits.test.js b/test/habits.test.js
+index 8dbc149..37f5b04 100644
+--- a/test/habits.test.js
++++ b/test/habits.test.js
+@@ -1,6 +1,6 @@
+ import { test } from "node:test";
+ import assert from "node:assert/strict";
+-import { addHabit, toggleDone, todayKey } from "../src/habits.js";
++import { addHabit, currentStreak, toggleDone, todayKey } from "../src/habits.js";
+ 
+ test("todayKey formats local date", () => {
+   assert.equal(todayKey(new Date(2026, 0, 5)), "2026-01-05");
+@@ -16,3 +16,58 @@ test("toggleDone adds then removes a day", () => {
+   assert.deepEqual(on[0].done, ["2026-01-05"]);
+   assert.deepEqual(toggleDone(on, h.id, "2026-01-05")[0].done, []);
+ });
++
++test("currentStreak counts back from today", () => {
++  assert.equal(currentStreak(["2026-06-10", "2026-06-09", "2026-06-08"], "2026-06-10"), 3);
++});
++
++test("currentStreak counts back from yesterday when today is not done yet", () => {
++  const done = ["2026-06-09", "2026-06-08"];
++  assert.equal(currentStreak(done, "2026-06-10"), 2);
++  assert.equal(currentStreak([...done, "2026-06-10"], "2026-06-10"), 3);
++});
++
++test("currentStreak is 0 when last done 2+ days ago", () => {
++  assert.equal(currentStreak(["2026-06-08", "2026-06-07"], "2026-06-10"), 0);
++  assert.equal(currentStreak(["2026-05-01"], "2026-06-10"), 0);
++});
++
++test("currentStreak stops at a gap", () => {
++  const done = ["2026-06-10", "2026-06-09", "2026-06-07", "2026-06-06", "2026-06-05"];
++  assert.equal(currentStreak(done, "2026-06-10"), 2);
++});
++
++test("currentStreak empty, only today, only yesterday", () => {
++  assert.equal(currentStreak([], "2026-06-10"), 0);
++  assert.equal(currentStreak(["2026-06-10"], "2026-06-10"), 1);
++  assert.equal(currentStreak(["2026-06-09"], "2026-06-10"), 1);
++});
++
++test("currentStreak handles out-of-order and duplicate dates", () => {
++  const done = ["2026-06-08", "2026-06-10", "2026-06-09", "2026-06-10", "2026-06-08"];
++  assert.equal(currentStreak(done, "2026-06-10"), 3);
++});
++
++test("currentStreak ignores future dates and does not bridge through them", () => {
++  assert.equal(currentStreak(["2026-06-11", "2026-06-12"], "2026-06-10"), 0);
++  assert.equal(currentStreak(["2026-06-11", "2026-06-09"], "2026-06-10"), 1);
++  assert.equal(currentStreak(["2026-06-11", "2026-06-10", "2026-06-09"], "2026-06-10"), 2);
++});
++
++test("currentStreak crosses month and year boundaries", () => {
++  assert.equal(currentStreak(["2026-03-01", "2026-02-28", "2026-02-27"], "2026-03-01"), 3);
++  assert.equal(currentStreak(["2028-03-01", "2028-02-29", "2028-02-28"], "2028-03-01"), 3);
++  assert.equal(currentStreak(["2027-01-01", "2026-12-31", "2026-12-30"], "2027-01-01"), 3);
++});
++
++test("currentStreak steps calendar days across DST changes", () => {
++  assert.equal(currentStreak(["2026-03-30", "2026-03-29", "2026-03-28"], "2026-03-30"), 3);
++  assert.equal(currentStreak(["2026-10-26", "2026-10-25", "2026-10-24"], "2026-10-26"), 3);
++  assert.equal(currentStreak(["2026-03-09", "2026-03-08", "2026-03-07"], "2026-03-09"), 3);
++});
++
++test("currentStreak handles a long history", () => {
++  const done = [];
++  for (let i = 0; i < 1000; i++) done.push(todayKey(new Date(2026, 5, 10 - i)));
++  assert.equal(currentStreak(done, "2026-06-10"), 1000);
++});

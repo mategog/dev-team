@@ -21,6 +21,12 @@ Markdown only. No hooks, no scripts, no telemetry, and no network calls from the
 
 ---
 
+## A real run
+
+![Tally habit list with day streaks next to each habit, built by dev-team](examples/demo-run/screens/desktop.png)
+
+The first end-to-end `/dev-team:build` on a tiny habit tracker: *"Show each habit's current streak next to its name."* **About 15 minutes** from command to local commit (4 of them waiting for approval), **13/13 tests**, QA `pass`, review `approve`, designer `looks right`. The brief, design spec, code diff and an honest run log — including the plugin bugs it found — are in [examples/demo-run](examples/demo-run/).
+
 ## How a build runs
 
 ```mermaid

@@ -2,6 +2,13 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.4.1 — 2026-11-09
+Fixes found by the first real end-to-end run (Tally demo, see `examples/demo-run/`).
+- Agents and commands resolve `company/` and `design/` against the current project root, never a parent project's (a nested project picked up its parent's profile).
+- Manager starts one shared dev server, saves 1440/768/375 screenshots to `design/<feature>-screens/` for the designer (who can't save images), assigns an owner to every spec acceptance check, and keeps specs in `design/`.
+- Review always reports failures it actually reproduced, whatever the confidence score.
+- Product asks only product questions, not process questions.
+
 ## 0.4.0 — 2026-11-09
 First public release.
 - Briefs carry state (`status`, `baseline`, `branch`, Plan, Progress log) so an interrupted `/dev-team:build` resumes; the Approved scope is frozen after approval.

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # /dev-team:status
 
-Read, don't change anything:
+Read, don't change anything. All paths are relative to the current project's root (git root of the working directory), never a parent project's `company/`:
 - `company/briefs/*.md` — each brief's `status:`, `branch:`, and the last line of its Progress log.
 - `design/**/*-spec.md` and `*-critique.md` — latest verdict per feature.
 - The last 10 lines of `company/decisions.md`.

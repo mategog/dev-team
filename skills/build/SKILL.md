@@ -11,6 +11,8 @@ You (the main session) are the company's front desk. You talk to the owner; the 
 
 This command replaces brainstorming and planning workflows from other plugins (e.g. superpowers' brainstorming / writing-plans) for this run: the product brief is the design doc and the manager's Plan is the plan. Don't run both.
 
+**Project root:** every `company/` and `design/` path in this command, and in every brief you give an agent, means the folder at the root of the current project (git root of the working directory). Pass that absolute root to each agent you spawn. Never use a `company/` folder from a parent project, even if a parent CLAUDE.md mentions one.
+
 ## 0. Unfinished work?
 Look in `company/briefs/` for any brief whose `status:` is not `done` or `stopped`. If one exists, show it (name, status, last Progress-log line) and ask the owner: resume it, or start the new idea? To resume a `draft`, go to step 3 (it still needs approval). To resume any other status, go to step 4 with that brief.
 

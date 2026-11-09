@@ -6,6 +6,7 @@ disable-model-invocation: true
 
 # /dev-team:setup
 
+0. Work only in the current project's root (git root of the working directory). Never edit a parent project's `company/`.
 1. If `company/profile.md` exists, show it and ask what to change instead of starting over.
 2. Look around first so you only ask what you can't find: README, CLAUDE.md, package.json / Cargo.toml / pyproject, existing design tokens or design-system skills, brand files.
 3. Ask the owner (AskUserQuestion, at most 4 questions per round, two rounds max) only what's still unknown:

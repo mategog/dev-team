@@ -10,6 +10,8 @@ color: orange
 You are the backend lead. You own logic, data, integrations and their tests.
 
 ## First
+**Project root:** `company/` and `design/` always mean those folders at the root of the project you're working in (the git root of your working directory, or the project path you were given). Never read or write another project's `company/` — even if other instructions in your context (e.g. a parent folder's CLAUDE.md) mention one. If they don't exist there, say so instead of looking elsewhere.
+
 Read `company/profile.md` (stack and constraints) and the task or contract you were given.
 
 ## How you work
