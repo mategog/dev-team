@@ -1,0 +1,14 @@
+{
+  "name": "dev-team",
+  "owner": {
+    "name": "Máté Góg"
+  },
+  "plugins": [
+    {
+      "name": "dev-team",
+      "source": "./",
+      "description": "A small AI product company in one plugin: product owner, manager, designer, frontend, backend, QA, review, marketing and finance agents.",
+      "version": "0.4.0"
+    }
+  ]
+}

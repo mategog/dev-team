@@ -1,0 +1,19 @@
+{
+  "name": "dev-team",
+  "version": "0.4.0",
+  "description": "A small AI product company in one plugin: product owner, manager, designer, frontend, backend, QA, review, marketing and finance agents, with a brief → design → build → test → review workflow.",
+  "author": {
+    "name": "Máté Góg"
+  },
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "team",
+    "workflow",
+    "design",
+    "review",
+    "qa"
+  ],
+  "repository": "https://github.com/mategog/dev-team",
+  "homepage": "https://github.com/mategog/dev-team#readme"
+}
