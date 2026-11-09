@@ -1,15 +1,23 @@
-# dev-team
+# dev-team — an AI dev team for Claude Code
 
-**A small product company for Claude Code.** Nine role agents take an idea from a one-page brief you approve, through design, build, QA and code review, to a local commit — and they also cover what most coding plugins skip: product decisions, UI design, marketing copy and pricing.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/github/v/tag/mategog/dev-team?label=version)](CHANGELOG.md)
+[![validate](https://github.com/mategog/dev-team/actions/workflows/validate.yml/badge.svg)](https://github.com/mategog/dev-team/actions/workflows/validate.yml)
 
-Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). Every file is readable in a few minutes.
+**dev-team is an open-source Claude Code plugin that adds nine specialized subagents — product owner, manager, designer, frontend, backend, QA, code review, marketing and finance — and runs them as one end-to-end workflow:** a one-page brief you approve, then design, build, QA, code review and a local git commit. It's built for solo developers and small teams who want the whole product loop, not just coding.
 
-```
-/plugin marketplace add mategog/dev-team
-/plugin install dev-team@dev-team
-```
+Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). 9 agents + 3 commands, about 900 tokens added to each session.
 
-Start a new session, then run `/dev-team:setup` once in your project.
+## Quick start
+
+1. Add the marketplace and install the plugin in Claude Code:
+   ```
+   /plugin marketplace add mategog/dev-team
+   /plugin install dev-team@dev-team
+   ```
+2. Start a new Claude Code session.
+3. In your project, run `/dev-team:setup` once — it writes `company/profile.md`, which every agent reads.
+4. Run `/dev-team:build <your idea>`, approve the brief, and let the team work. `/dev-team:status` shows progress.
 
 ---
 
@@ -138,10 +146,36 @@ Checked 2026-11-09 by reading each project's files. Stars change; strengths don'
 
 Pick dev-team if you're a solo builder or a small team who wants the whole product loop — brief, design, code, QA, review, pricing, copy — in a small plugin you can read end to end. Pick superpowers or gstack if you want stricter, hook-enforced engineering discipline and are fine with a bigger footprint.
 
+## FAQ
+
+### What is dev-team?
+dev-team is a free, MIT-licensed Claude Code plugin that gives Claude a small product team: nine subagents with separate roles and tool limits, plus `/dev-team:build`, which takes an idea through an approved brief, design, build, QA and code review to a local git commit.
+
+### How do I install a Claude Code plugin from GitHub?
+In Claude Code, run `/plugin marketplace add mategog/dev-team`, then `/plugin install dev-team@dev-team`, and start a new session. The same two commands work for any plugin repo that ships a `.claude-plugin/marketplace.json`.
+
+### Does dev-team push code, open PRs or deploy?
+No. It works on a local `dev-team/<feature>` branch and the manager makes one local commit at the end. Pushing, merging, tagging, publishing and deploying are always left to you.
+
+### Is it for solo developers or teams?
+It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
+
+### How much does it cost to run?
+The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, QA, marketing, finance) default to Sonnet; the rest inherit your session's model. You can change `model:` in any agent file.
+
+### Does it work with superpowers or other Claude Code plugins?
+Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
+
+### Do I need the recommended skills?
+No. Without them the agents still work; they lose the extra guidance those skills add (for example ponytail's "smallest change" rules or the pricing frameworks).
+
+### What happens if a build is interrupted?
+Each brief stores its status, starting commit, branch, plan and progress log. Run `/dev-team:build` again and it offers to resume where it stopped.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Changes to agent behaviour need a line in [CHANGELOG.md](CHANGELOG.md) and a version bump in both `.claude-plugin/*.json` files — without the bump, installed copies don't update.
 
 ## License
 
-[MIT](LICENSE) © Máté Góg
+[MIT](LICENSE) © [Máté Góg](https://github.com/mategog). Issues and ideas welcome in [GitHub Issues](https://github.com/mategog/dev-team/issues).
