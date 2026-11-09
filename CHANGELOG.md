@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.4.2 — 2026-11-09
+- Frontend and backend name a model for every helper they spawn, like the manager already did: the agent's default, or `sonnet` for mechanical tasks (searches, renames, running tests). Helpers no longer inherit the most expensive model by default.
+
 ## 0.4.1 — 2026-11-09
 Fixes found by the first real end-to-end run (Tally demo, see `examples/demo-run/`).
 - Agents and commands resolve `company/` and `design/` against the current project root, never a parent project's (a nested project picked up its parent's profile).
