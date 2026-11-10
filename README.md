@@ -63,7 +63,7 @@ flowchart LR
 | `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. Change `model:` in any agent file to suit your plan.
+`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager, frontend or backend spawn another agent, they name its model: that agent's default, or `sonnet` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan.
 
 ## Commands
 
@@ -167,7 +167,7 @@ No. It works on a local `dev-team/<feature>` branch and the manager makes one lo
 It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
 
 ### How much does it cost to run?
-The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, QA, marketing, finance) default to Sonnet; the rest inherit your session's model. You can change `model:` in any agent file.
+The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, QA, marketing, finance) default to Sonnet; the rest inherit your session's model, and helpers doing mechanical work run on Sonnet. You can change `model:` in any agent file.
 
 ### Does it work with superpowers or other Claude Code plugins?
 Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
