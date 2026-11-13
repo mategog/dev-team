@@ -1,0 +1,6 @@
+- 2026-11-07 · brief approved · owner
+- 2026-11-08 · plan written, branch dev-team/streak-reminders from 4f2a9c1 · status building · manager
+- 2026-11-08 · T1 spec written · designer · read it
+- 2026-11-08 · design approved · owner
+- 2026-11-09 · T2 built, 6 unit tests + 2 e2e pass · frontend · ran it
+- 2026-11-09 · status testing · manager
