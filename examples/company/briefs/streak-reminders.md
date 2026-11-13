@@ -1,7 +1,11 @@
 ---
 status: testing
-baseline: 4f2a9c1
-branch: dev-team/streak-reminders
+size: normal
+next: qa and review of T2, then design critique
+repos:
+  - path: .
+    branch: dev-team/streak-reminders
+    baseline: 4f2a9c1
 ---
 # Streak reminders
 
@@ -17,14 +21,6 @@ branch: dev-team/streak-reminders
 - **Teams needed:** designer (toggle + time picker), frontend (UI + scheduling), qa, review. No backend, no money involved.
 - **Risks and open questions:** browsers may throttle timers in background tabs — accepted for v1.
 
-## Plan
-- Contract: `habit.reminder = { enabled: boolean, time: "HH:MM" } | null` in local storage.
-- T1 designer → `design/streak-reminders-spec.md`.
-- T2 frontend → `src/lib/reminders.ts`, `src/lib/ui/HabitRow.svelte`; done-checks 1–4; bug fixes start with a failing test.
-- T3 qa → done-checks + break list. T4 review → diff since 4f2a9c1. T5 designer critique.
-
-## Progress log
-- 2026-11-08 · status building · manager
-- 2026-11-08 · T1 spec written · designer · verified by reading
-- 2026-11-09 · T2 built, 6 unit tests + 2 e2e pass · frontend · ran it
-- 2026-11-09 · status testing · manager
+## Owner checks
+<!-- Checks only the owner can run. Wording frozen with the scope; tick with the date when the owner reports the result. -->
+- [ ] A reminder arrives on the owner's own phone (installed PWA, screen locked).

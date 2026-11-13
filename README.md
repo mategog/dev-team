@@ -34,12 +34,13 @@ flowchart LR
   A[Your idea] --> P[product: one-page brief]
   P --> G{You approve?}
   G -- change --> P
-  G -- yes --> B[git branch + baseline commit]
-  B --> M[manager: plan]
+  G -- yes --> M[plan + local branch<br/>or worktree per repo]
   M --> F[finance + marketing<br/>if money is involved]
   M --> D[designer: spec<br/>if UI changes]
-  D --> FE[frontend]
+  D --> DG{You approve<br/>the design?}
+  DG -- yes --> FE[frontend]
   M --> BE[backend]
+  M -- small brief:<br/>one builder, review --> R
   FE --> Q[qa: use it, break it]
   BE --> Q
   Q --> R[review: diff since baseline]
@@ -54,7 +55,7 @@ flowchart LR
 | Agent | Job | Edits code? | Default model |
 |---|---|---|---|
 | `product` | Turns your idea into a one-page brief: problem, premise check, scope, non-goals, done-checks | No | sonnet |
-| `manager` | Plans the work, runs the teams, logs progress in the brief, grades findings, commits locally at the end | Integration fixes only | inherit |
+| `manager` | Plans the work, runs the teams, logs progress, grades findings, commits locally at the end. `/dev-team:build` runs its playbook in your main session, so it can stop at your gates and wait for every report. | Integration fixes only | inherit |
 | `designer` | Writes a spec before any new screen; critiques the built UI at 1440 / 768 / 375 px | No — writes `design/` docs only | inherit |
 | `frontend` | Builds UI to the spec, verifies in the browser | Yes | inherit |
 | `backend` | Logic, APIs, data, scripts, tests | Yes | inherit |
@@ -63,7 +64,7 @@ flowchart LR
 | `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. Change `model:` in any agent file to suit your plan.
+`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager, frontend or backend spawn another agent, they name its model: that agent's default, or `sonnet` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan.
 
 ## Commands
 
@@ -81,7 +82,8 @@ You can also call any agent directly, e.g. "use dev-team:finance to compare Padd
 company/
   profile.md            who you are and how you build (read by every agent)
   decisions.md          one line per decision: date · decision · why
-  briefs/<feature>.md   frozen approved scope + plan + progress log + status
+  briefs/<feature>.md   status, size, next step, repos; frozen approved scope; owner checks
+  briefs/<feature>/     plan.md and log.md (one short line per step)
   marketing/            competitor profiles and feature matrix
   finance/<topic>.xlsx  models with Inputs / Scenarios / Sensitivity / Checks sheets
 design/
@@ -89,12 +91,16 @@ design/
   <feature>-critique.md designer's review of the built UI
 ```
 
-Because state lives in the brief (`status:`, `baseline:`, `branch:`, Plan, Progress log), a build interrupted by a crash, a compaction or a new day picks up where it stopped.
+Brief statuses: `draft` → `approved` → `building` → `testing` → `done`, plus `waiting-owner`, `parked`, `stopped` and `superseded`; `next:` says in one line what happens next and who does it. Each repo the build touches is listed with its path (repo or worktree), branch and baseline commit, so a build interrupted by a crash, a compaction or a new day picks up where it stopped — including builds that span several repos.
+
+**Small briefs** (one builder team, no new screen, no money, no new dependency) skip the plan and the designer: one builder, then review, plus QA when users see the change.
 
 ## Rules the agents follow
 
 - **You approve the brief before anything is built.** Its scope is then frozen; agents are told never to edit it to match what they built.
-- **Git safety.** Stops and asks if your tree is dirty. Works on a local `dev-team/<feature>` branch. Builders never run `git checkout --`, `restore`, `reset --hard`, `clean` or `stash` (they share one folder). Only the manager commits, locally. **Nothing is ever pushed, merged, tagged or deployed** without you.
+- **You approve the design before UI code is written**, unless `company/profile.md` turns that gate off.
+- **Owner checks stay yours.** The brief lists what only you can verify (real device, real accounts, payments); agents never fake them, and the summary lists the open ones before offering to push or merge.
+- **Git safety.** Never touches your uncommitted work: a repo that's dirty or busy with another build gets a git worktree beside it. Works on a local `dev-team/<feature>` branch. Builders never run `git checkout --`, `restore`, `reset --hard`, `clean` or `stash` (they share one folder). Only the manager commits, locally. **Nothing is ever pushed, merged, tagged or deployed** without you.
 - **No cheating to green.** Review flags deleted or skipped tests, loosened assertions, regenerated snapshots, swallowed errors, placeholder code, and specs edited to match the build. A run with zero tests is not a pass.
 - **Bug fixes start with a failing test.** A check that couldn't have failed proves nothing.
 - **Fix loops stop after 3 rounds** and hand the open findings to you.
@@ -108,7 +114,7 @@ Claude Code enforces each agent's **tool list**, and that's all:
 - `designer` can't Edit or use a terminal, but can Write (for its `design/` docs) — staying in `design/` is an instruction.
 - `product`, `marketing` and `finance` can write files (and finance has a terminal for spreadsheets); staying in `company/` is an instruction.
 
-Everything else above — approval first, frozen scope, git rules, 3-round cap, no cheating — is an **instruction** the agents follow, not a hard gate. If you want hard blocks, add your own hooks (e.g. with Anthropic's `hookify` plugin).
+Everything else above — approval and design gates, frozen scope, git rules, 3-round cap, no cheating — is an **instruction** the agents follow, not a hard gate. If you want hard blocks, add your own hooks (e.g. with Anthropic's `hookify` plugin).
 
 ## Recommended skills
 
@@ -161,13 +167,13 @@ dev-team is a free, MIT-licensed Claude Code plugin that gives Claude a small pr
 In Claude Code, run `/plugin marketplace add mategog/dev-team`, then `/plugin install dev-team@dev-team`, and start a new session. The same two commands work for any plugin repo that ships a `.claude-plugin/marketplace.json`.
 
 ### Does dev-team push code, open PRs or deploy?
-No. It works on a local `dev-team/<feature>` branch and the manager makes one local commit at the end. Pushing, merging, tagging, publishing and deploying are always left to you.
+No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo has uncommitted work) and makes one local commit per repo at the end. Pushing, merging, tagging, publishing and deploying are always left to you.
 
 ### Is it for solo developers or teams?
 It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
 
 ### How much does it cost to run?
-The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, QA, marketing, finance) default to Sonnet; the rest inherit your session's model. You can change `model:` in any agent file.
+The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, QA, marketing, finance) default to Sonnet; the rest inherit your session's model, and helpers doing mechanical work run on Sonnet. You can change `model:` in any agent file.
 
 ### Does it work with superpowers or other Claude Code plugins?
 Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
@@ -176,7 +182,7 @@ Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that
 No. Without them the agents still work; they lose the extra guidance those skills add (for example ponytail's "smallest change" rules or the pricing frameworks).
 
 ### What happens if a build is interrupted?
-Each brief stores its status, starting commit, branch, plan and progress log. Run `/dev-team:build` again and it offers to resume where it stopped.
+Each brief stores its status, next step, and each repo's branch and starting commit; its plan and log sit beside it. Run `/dev-team:build` again and it offers to resume where it stopped.
 
 ## Contributing
 

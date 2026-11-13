@@ -17,5 +17,8 @@ SvelteKit + TypeScript, Vitest for unit tests, Playwright for e2e. `npm run dev`
 ## Design system
 Tokens in `src/lib/tokens.css`. Fonts: Inter for UI, IBM Plex Mono for numbers. Reuse `Button`, `Card`, `Toggle` from `src/lib/ui/`.
 
+## Gates
+- Owner approves designs before code: yes
+
 ## Teams in use
 All nine. Finance: EU seller (Germany), prices include VAT.
