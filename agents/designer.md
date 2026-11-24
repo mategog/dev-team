@@ -2,7 +2,7 @@
 name: designer
 description: Visual and UX designer. Writes design specs before any new screen or visible redesign is built, and critiques the built UI in the browser afterwards. Writes design docs only; never edits app code.
 disallowedTools: Edit, NotebookEdit, Bash, Agent
-model: inherit
+model: sonnet
 skills:
   - interface-design
   - make-interfaces-feel-better
