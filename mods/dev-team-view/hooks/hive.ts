@@ -37,7 +37,8 @@ const PERSON =
 
 type Box = { x: number; y: number; w: number; h: number }
 
-export function hiveSvg(agents: HiveAgent[], messages: HiveMessage[], width: number): string {
+// Lays the drawing out in design units `width` wide; returns the markup and its height in those units.
+function layout(agents: HiveAgent[], messages: HiveMessage[], width: number): { body: string; height: number } {
   const pad = 12
   const gx = 14
   const gy = 24
@@ -149,7 +150,7 @@ export function hiveSvg(agents: HiveAgent[], messages: HiveMessage[], width: num
     ['Message just sent', '<line x1="0" y1="-3" x2="14" y2="-3" stroke="#60a5fa" stroke-width="3"/>'],
     ['Waiting on', '<line x1="0" y1="-3" x2="14" y2="-3" stroke="#f5b301" stroke-width="1.5" stroke-dasharray="4 3"/>'],
   ]
-  const perRow = width < 540 ? 2 : 4
+  const perRow = width < 360 ? 1 : width < 540 ? 2 : 4
   const cellW = (width - 2 * pad) / perRow
   const legendY = (n ? gridTop + rows * (ch + gy) : gridTop) + 14
   items.forEach(([name, swatch], i) => {
@@ -159,11 +160,36 @@ export function hiveSvg(agents: HiveAgent[], messages: HiveMessage[], width: num
   })
   const height = Math.ceil(legendY + (Math.ceil(items.length / perRow) - 1) * 18 + 10)
 
-  return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="ui-monospace, Menlo, monospace">` +
-    `<defs>${PERSON}</defs>` +
-    `<rect width="100%" height="100%" fill="#0b0b0d"/>` +
-    out.join('') +
-    '</svg>'
-  )
+  return { body: `<defs>${PERSON}</defs><rect width="100%" height="100%" fill="#0b0b0d"/>${out.join('')}`, height }
+}
+
+// CSS px per design unit: card text comes out ~16px, a card ~170px wide, on any monitor (CSS px don't depend on it).
+const SCALE = 1.5
+// When the content would be taller than maxH, shrink step by step to this floor, then let the pane scroll.
+const SCALES = [SCALE, 1.35, 1.2, 1.1, 1]
+
+// The frame is `pixels` wide and exactly as tall as the content at a fixed scale, so nothing letterboxes
+// and a bigger pane means more cards per row, not bigger cards.
+export function hiveSvg(
+  agents: HiveAgent[],
+  messages: HiveMessage[],
+  pixels: number,
+  maxH = Infinity,
+): { source: string; height: number } {
+  let scale = SCALES[0]!
+  let one = layout(agents, messages, Math.max(200, pixels / scale))
+  for (const next of SCALES.slice(1)) {
+    if (one.height * (pixels / Math.max(200, pixels / scale)) <= maxH) break
+    scale = next
+    one = layout(agents, messages, Math.max(200, pixels / scale))
+  }
+  const width = Math.max(200, pixels / scale)
+  const height = Math.ceil((one.height * pixels) / width)
+  return {
+    height,
+    source:
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${f(width)} ${one.height}" width="${pixels}" height="${height}" font-family="ui-monospace, Menlo, monospace">` +
+      one.body +
+      '</svg>',
+  }
 }

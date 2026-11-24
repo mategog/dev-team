@@ -96,6 +96,11 @@ export const register: Register = on => {
     const log = await read($, messages)
     const name = (id: string) => (id === 'main' ? 'coordinator' : role(all.find(a => a.id === id)?.type ?? id))
     const cols = e.props.bodyColumns
+    // Desktop draws an SVG in a frame: width is capped to the pane, height is 150px unless given. A column is about
+    // 9 CSS px and a row about 19 (measured), so half the pane's height is rows * 10.
+    const rows = e.viewport?.rows ?? e.props.scroll.bodyRows
+    const px = Math.max(300, cols * 9)
+    const hive = hiveSvg(all, log, px, rows * 10)
     const { Box, Text } = $.ui.resolve(e)
 
     const feed = log.slice(-8).map(m => (
@@ -116,9 +121,11 @@ export const register: Register = on => {
 
     // The terminal has no Svg: it gets the plain list below instead.
     const Svg = e.surface === 'terminal' ? undefined : $.ui.resolve(e).Svg
-    const hive = Svg && (
+    const picture = Svg && (
       <Svg
-        source={hiveSvg(all, log, Math.max(320, cols * 8))}
+        source={hive.source}
+        width={px}
+        height={hive.height}
         alt={`${working.length} agents working, ${all.length - working.length} finished`}
         isInteractive
       />
@@ -126,7 +133,7 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column">
-        {hive ?? (all.length === 0 ? (
+        {picture ?? (all.length === 0 ? (
           <Text dimColor>No agents yet.</Text>
         ) : (
           list

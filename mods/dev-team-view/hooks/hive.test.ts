@@ -12,7 +12,7 @@ const agent = (id: string, type: string, status: HiveAgent['status'], extra: Par
 })
 
 test('empty input is a valid svg with the manager alone', async () => {
-  const svg = hiveSvg([], [], 360)
+  const svg = hiveSvg([], [], 360).source
   expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true)
   expect(svg.endsWith('</svg>')).toBe(true)
   expect(svg).toContain('No one working yet')
@@ -27,7 +27,7 @@ test('mixed agents show roles, statuses, last tool and escape text', async () =>
     agent('a3', 'Explore', 'failed', { parentId: 'a1' }),
   ]
   const messages: HiveMessage[] = [{ at: 1, from: 'main', to: 'a1', kind: 'send', text: 'hi "there"' }]
-  const svg = hiveSvg(agents, messages, 500)
+  const svg = hiveSvg(agents, messages, 500).source
   for (const s of ['>frontend<', '>backend<', '>Explore<', '>working · Edit<', '>done<', '>failed<', '1 of 3 done', 'stroke-linejoin="round"'])
     expect(svg).toContain(s)
   expect(svg).toContain('make &lt;b&gt;&amp; it&apos;s')
@@ -42,12 +42,27 @@ test('30 agents stay under the size limit, even with escape-heavy text', async (
   const agents = Array.from({ length: 30 }, (_, i) =>
     agent(`a${i}`, `dev-team:${long}`, (['working', 'done', 'failed', 'stopped'] as const)[i % 4]!, { task: long, lastTool: long }),
   )
-  const svg = hiveSvg(agents, [{ at: 1, from: 'a3', to: 'a7', kind: 'send', text: long }], 360)
+  const svg = hiveSvg(agents, [{ at: 1, from: 'a3', to: 'a7', kind: 'send', text: long }], 360).source
   expect(svg.length).toBeLessThan(131072)
 })
 
 test('a message to an unknown name does not throw or highlight', async () => {
-  const svg = hiveSvg([agent('a1', 'dev-team:qa', 'working')], [{ at: 1, from: 'main', to: 'nobody', kind: 'send', text: 'x' }], 360)
+  const svg = hiveSvg([agent('a1', 'dev-team:qa', 'working')], [{ at: 1, from: 'main', to: 'nobody', kind: 'send', text: 'x' }], 360).source
   expect(svg).toContain('>qa<')
   expect(svg).not.toContain('stroke-linejoin="round"')
+})
+
+// Px per design unit is the same for 1, 6 and 30 agents while they fit, and the viewBox has the frame's aspect.
+test('the scale is fixed and the frame matches the content', async () => {
+  const unit = (n: number, px: number) => {
+    const agents = Array.from({ length: n }, (_, i) => agent(`a${i}`, 'dev-team:qa', 'working'))
+    const { source, height } = hiveSvg(agents, [], px)
+    const [w, h] = source.match(/viewBox="0 0 ([\d.]+) (\d+)"/)!.slice(1).map(Number)
+    expect(Math.abs(px / w! - height / h!)).toBeLessThan(0.02)
+    return px / w!
+  }
+  for (const px of [320, 700, 1350]) {
+    const scales = [1, 6, 30].map(n => unit(n, px))
+    expect(Math.max(...scales) - Math.min(...scales)).toBeLessThan(0.01)
+  }
 })
