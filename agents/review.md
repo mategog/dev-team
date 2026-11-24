@@ -2,7 +2,7 @@
 name: review
 description: Independent code review of finished work — bugs, security holes, cheated tests, missed callers, needless code. Use after any non-trivial code change and as the last gate of every build. Reports findings; never fixes them.
 disallowedTools: Write, Edit, NotebookEdit
-model: inherit
+model: sonnet
 skills:
   - ponytail
 color: red

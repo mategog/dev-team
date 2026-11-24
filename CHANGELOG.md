@@ -3,9 +3,10 @@
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
 ## 0.6.1 — 2026-11-24
-Cuts tokens, loses no check.
+Cuts tokens.
 - The whole-diff review after the last slice is skipped when the brief had one slice (it was the same diff reviewed twice).
-- The manager tells every agent it spawns to keep the final report under 200 words and put details in files.
+- `review` and `designer` default to Sonnet instead of inheriting the session model. This saves tokens only when your session runs a pricier model; set `model: inherit` in their agent files for a stricter reviewer or designer.
+- The manager asks frontend, backend, marketing and finance to keep their final report under 200 words, with long output saved to a file under `company/briefs/<slug>/`. `review` and `qa` still report in full, since they can't write files and their findings must not be cut.
 
 ## 0.6.0 — 2026-11-24
 Review-sized builds: no more one huge diff at the end.
