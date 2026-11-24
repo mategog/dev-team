@@ -64,7 +64,9 @@ flowchart LR
 | `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager, frontend or backend spawn another agent, they name its model: that agent's default, or `sonnet` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
+`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager or frontend spawn another agent, they name its model: that agent's default, or `haiku` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
+
+`review`, `backend`, `product`, `manager`, `marketing` and `finance` list their tools (`tools:` in each file) instead of inheriting all of them, so a spawn doesn't carry every tool and MCP server you have installed. If `backend` needs one that isn't listed (a database server, say), add its name there, e.g. `mcp__yourserver__*`. `frontend`, `qa` and `designer` still inherit everything, because they need whichever browser tools you have.
 
 ## Optional: team view
 
@@ -188,7 +190,7 @@ No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo
 It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
 
 ### How much does it cost to run?
-The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, designer, QA, review, marketing, finance) default to Sonnet; manager, frontend and backend inherit your session's model, and helpers doing mechanical work run on Sonnet. You can change `model:` in any agent file.
+The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, designer, QA, review, marketing, finance) default to Sonnet; manager, frontend and backend inherit your session's model, and helpers doing mechanical work run on Haiku. You can change `model:` in any agent file.
 
 ### Does it work with superpowers or other Claude Code plugins?
 Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
