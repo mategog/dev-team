@@ -4,6 +4,18 @@ A live **Team** pane for the [dev-team](https://github.com/mategog/dev-team) plu
 
 It works with any subagents, not just dev-team's. It costs the model no tokens: it adds nothing to the prompt and registers no tool. Type `/team` to open the pane. If you close it, a **Team ▸** button appears above the prompt to bring it back.
 
+## What it looks like
+
+The same 6 agents in a wide pane, where the desks sit in one row (product and designer done, frontend and backend working, qa failed, one agent stopped; blue line = the latest message):
+
+![Team pane in a wide pane: a manager desk above six agent desks in one row, with status badges and a legend](docs/team-wide.png)
+
+And in a narrow pane, where the desks stack in two columns:
+
+<img src="docs/team-narrow.png" alt="Team pane in a narrow pane: a manager desk above six agent desks in two columns" width="330">
+
+These are renders of the mod's own drawing code with sample data, not screenshots of a live build. The size is fixed (about 16px text, a desk about 170px wide), so wider panes fit more desks per row instead of drawing them bigger.
+
 ## Install
 
 In a terminal session: `/plugin install dev-team-view@dev-team`
