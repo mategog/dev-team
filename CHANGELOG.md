@@ -2,6 +2,12 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.6.0 — 2026-11-24
+Review-sized builds: no more one huge diff at the end.
+- The manager plans **slices**: one user-visible behaviour each, at most about 500 changed lines (tests, lockfiles and generated files not counted), each with a done-check the owner can run in a minute. Oversized slices are split before building.
+- Each slice is reviewed, committed on its own (`slice N/M: …`) and followed by a slice report with a **review map** from `dev-team:review` (where the logic is, what the tests prove, what to skip). The build then waits for the owner. Turn the pause off with `Owner reviews each slice: no` under `## Gates`. `small` briefs are one slice and don't pause.
+- Review also runs once over the whole diff after the last slice.
+
 ## 0.5.1 — 2026-11-13
 - `/dev-team:build` and `/dev-team:status` skip files in `company/briefs/` with no `status:` frontmatter (notes such as contracts or research), instead of flagging them as unknown briefs.
 

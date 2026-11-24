@@ -55,7 +55,7 @@ flowchart LR
 | Agent | Job | Edits code? | Default model |
 |---|---|---|---|
 | `product` | Turns your idea into a one-page brief: problem, premise check, scope, non-goals, done-checks | No | sonnet |
-| `manager` | Plans the work, runs the teams, logs progress, grades findings, commits locally at the end. `/dev-team:build` runs its playbook in your main session, so it can stop at your gates and wait for every report. | Integration fixes only | inherit |
+| `manager` | Plans the work, runs the teams, logs progress, grades findings, commits locally slice by slice. `/dev-team:build` runs its playbook in your main session, so it can stop at your gates and wait for every report. | Integration fixes only | inherit |
 | `designer` | Writes a spec before any new screen; critiques the built UI at 1440 / 768 / 375 px | No — writes `design/` docs only | inherit |
 | `frontend` | Builds UI to the spec, verifies in the browser | Yes | inherit |
 | `backend` | Logic, APIs, data, scripts, tests | Yes | inherit |
@@ -99,6 +99,7 @@ Brief statuses: `draft` → `approved` → `building` → `testing` → `done`, 
 
 - **You approve the brief before anything is built.** Its scope is then frozen; agents are told never to edit it to match what they built.
 - **You approve the design before UI code is written**, unless `company/profile.md` turns that gate off.
+- **You review the build one slice at a time** (about 500 changed lines each, with a review map), unless `company/profile.md` turns that gate off.
 - **Owner checks stay yours.** The brief lists what only you can verify (real device, real accounts, payments); agents never fake them, and the summary lists the open ones before offering to push or merge.
 - **Git safety.** Never touches your uncommitted work: a repo that's dirty or busy with another build gets a git worktree beside it. Works on a local `dev-team/<feature>` branch. Builders never run `git checkout --`, `restore`, `reset --hard`, `clean` or `stash` (they share one folder). Only the manager commits, locally. **Nothing is ever pushed, merged, tagged or deployed** without you.
 - **No cheating to green.** Review flags deleted or skipped tests, loosened assertions, regenerated snapshots, swallowed errors, placeholder code, and specs edited to match the build. A run with zero tests is not a pass.
@@ -167,7 +168,7 @@ dev-team is a free, MIT-licensed Claude Code plugin that gives Claude a small pr
 In Claude Code, run `/plugin marketplace add mategog/dev-team`, then `/plugin install dev-team@dev-team`, and start a new session. The same two commands work for any plugin repo that ships a `.claude-plugin/marketplace.json`.
 
 ### Does dev-team push code, open PRs or deploy?
-No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo has uncommitted work) and makes one local commit per repo at the end. Pushing, merging, tagging, publishing and deploying are always left to you.
+No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo has uncommitted work) and makes one local commit per reviewed slice. Pushing, merging, tagging, publishing and deploying are always left to you.
 
 ### Is it for solo developers or teams?
 It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.

@@ -37,6 +37,7 @@ Skill name to load (e.g. `my-app-design`) or tokens file path. Fonts, colours, c
 
 ## Gates
 - Owner approves designs before code: yes
+- Owner reviews each slice: yes
 
 ## Teams in use
 Which dev-team agents this project uses and any project-specific notes for them.

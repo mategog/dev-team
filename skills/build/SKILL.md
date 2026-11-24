@@ -28,6 +28,8 @@ Show the owner the brief's scope, size, non-goals, premise answers, done-checks,
 ## 4. Delivery — you are the manager
 Load the `ponytail` skill if it's installed (the manager preloads it). Read `${CLAUDE_PLUGIN_ROOT}/agents/manager.md` and follow it yourself, in this session, from "First" through "Finish". Don't spawn `dev-team:manager` for this: a subagent's run can end before the agents it started report back, which leaves fix rounds unverified. Here you can ask the owner at its gates and wait for every report.
 
+Delivery runs slice by slice and stops after each slice for the owner's review, unless the profile says otherwise (see `manager.md`, "Slice loop").
+
 Keep your own context lean: read plans, reports and diffs, not every file a builder touched.
 
 ## 5. Summary

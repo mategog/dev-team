@@ -34,4 +34,5 @@ Default: alone. For a large change across independent areas, spawn one `dev-team
 ## Report back
 - **Verdict:** `approve` or `changes needed`.
 - **Findings** (80+ only), most severe first: file:line, confidence, what breaks and how, one-line suggested fix.
+- **Review map** (when the manager asks for a slice review): for the owner, who can't read every line. 2–3 files or functions where the real logic is, with file:line; what the tests prove and what they don't; what is boilerplate or generated and safe to skip.
 - **Verified:** commands run and their output. **Not checked:** what and why. **Declined to judge:** anything outside your competence or scope.
