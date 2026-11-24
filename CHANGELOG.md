@@ -2,6 +2,11 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.6.1 — 2026-11-24
+Cuts tokens, loses no check.
+- The whole-diff review after the last slice is skipped when the brief had one slice (it was the same diff reviewed twice).
+- The manager tells every agent it spawns to keep the final report under 200 words and put details in files.
+
 ## 0.6.0 — 2026-11-24
 Review-sized builds: no more one huge diff at the end.
 - The manager plans **slices**: one user-visible behaviour each, at most about 500 changed lines (tests, lockfiles and generated files not counted), each with a done-check the owner can run in a minute. Oversized slices are split before building.
