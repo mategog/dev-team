@@ -28,6 +28,7 @@ declare module 'claude-code' {
     'dev-team-view': {
       agents: Shaped<HiveAgent[]>
       messages: Shaped<HiveMessage[]>
+      isOpen: boolean
     }
   }
 }

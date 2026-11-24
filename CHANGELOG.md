@@ -4,6 +4,7 @@ All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.js
 
 ## Unreleased
 - Optional companion mod `dev-team-view` in `mods/dev-team-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.
+- `dev-team-view` 0.1.1: after you close the Team pane, a **Team ▸** button above the prompt reopens it, and `/team` says so when the pane can't be shown instead of always claiming it opened.
 
 ## 0.6.1 — 2026-11-24
 Cuts tokens.

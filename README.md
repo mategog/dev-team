@@ -68,7 +68,7 @@ flowchart LR
 
 ## Optional: team view
 
-A separate mod, `dev-team-view`, adds a live **Team** pane next to the chat: a manager desk plus one desk per agent, with who is working (and which tool it just used), who is done or failed, a line between agents for the latest message, and a feed of the last messages between agents. It reads agent start and report events and costs the model no tokens: it adds nothing to the prompt and registers no tool. Type `/team` to open it.
+A separate mod, `dev-team-view`, adds a live **Team** pane next to the chat: a manager desk plus one desk per agent, with who is working (and which tool it just used), who is done or failed, a line between agents for the latest message, and a feed of the last messages between agents. It reads agent start and report events and costs the model no tokens: it adds nothing to the prompt and registers no tool. Type `/team` to open it; if you close the pane, a **Team ▸** button appears above the prompt to bring it back.
 
 Install it from this same marketplace. In a terminal session:
 

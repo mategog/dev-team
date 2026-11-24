@@ -65,3 +65,41 @@ test('an empty session draws placeholders', async ($) => {
   expect((await ui.find({ type: 'Text', text: /No agents/ }))?.text).toBe('No agents yet.')
   await ui.unmount()
 })
+
+const BAND = {
+  plugin: 'dev-team-view',
+  component: 'AbovePrompt',
+  surface: 'desktop',
+  props: {
+    hasSurvey: false,
+    isCollapsed: false,
+    isWorking: false,
+    maxRows: 3,
+    bodyColumns: 80,
+    scroll: { offset: 0, bodyRows: 3 },
+    view: {},
+  },
+} as const
+
+// What the mod stored under `isOpen`: false once the person closed the pane.
+const stored = (value: boolean) => ({ value: { value, version: 1 } })
+
+test('a closed pane is reopened from a button above the prompt', async ($, on) => {
+  let opens = 0
+  on('state.get', () => stored(false))
+  on('state.set', () => ({ value: { isSet: true, version: 2 } }))
+  on('ui.open', () => (opens++, { value: { isPlaced: true } }))
+
+  const ui = await $.ui.mount(BAND)
+  expect((await ui.find({ type: 'Button' }))?.text).toContain('Team')
+  await ui.press({ key: 'team' })
+  expect(opens).toBe(1)
+  await ui.unmount()
+})
+
+test('an open pane adds no button', async ($, on) => {
+  on('state.get', () => stored(true))
+  const ui = await $.ui.mount(BAND)
+  expect(await ui.find({ type: 'Button' })).toBeUndefined()
+  await ui.unmount()
+})

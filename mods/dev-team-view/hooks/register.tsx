@@ -9,6 +9,8 @@ const TITLE = 'Team'
 // Change a tag when its item's fields change: an earlier version's value outlives a reload.
 const agents = atom({ plugin: 'dev-team-view', key: 'agents' } as const, [], { shape: 'agents-1' })
 const messages = atom({ plugin: 'dev-team-view', key: 'messages' } as const, [], { shape: 'messages-1' })
+// Whether the pane is open: false after the person closes it, so the band below offers a way back.
+const isOpen = atom({ plugin: 'dev-team-view', key: 'isOpen' } as const, true)
 
 const clip = (s: string, n: number) => {
   const one = s.replace(/\s+/g, ' ').trim()
@@ -19,16 +21,38 @@ const role = (type: string) => type.replace(/^.*:/, '')
 const say = ($: EngineInterface, m: Omit<HiveMessage, 'at'>) =>
   update($, messages, list => [...list, { ...m, at: Date.now(), text: clip(m.text, 300) }].slice(-100))
 
+const open = async ($: EngineInterface) => {
+  const opened = await $.ui.open({ id: PANE, title: TITLE })
+  await update($, isOpen, () => opened.isPlaced)
+  return opened
+}
+
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({ name: 'team', description: 'Show the dev team: who works on what, and their messages' })
-    void $.ui.open({ id: PANE, title: TITLE })
+    void open($)
     return next(e)
   })
 
   on('command.run', { command: 'team' }, async $ => {
-    await $.ui.open({ id: PANE, title: TITLE })
-    return { text: 'Team pane opened.' }
+    const opened = await open($)
+    return { text: opened.isPlaced ? 'Team pane opened.' : `Team pane not shown: ${opened.reason}` }
+  })
+
+  on('ui.close', { id: PANE }, async ($, e, next) => {
+    await update($, isOpen, () => false)
+    return next(e)
+  })
+
+  // While the pane is closed, a button above the prompt brings it back.
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    if (e.props.hasSurvey || (await read($, isOpen))) return next(e)
+    const { Box, Button } = $.ui.resolve(e)
+    return (
+      <Box>
+        <Button key="team" label="Team ▸" onPress={() => open($)} />
+      </Box>
+    )
   })
 
   on('agent.spawn', async ($, e, next) => {

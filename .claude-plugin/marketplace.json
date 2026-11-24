@@ -14,7 +14,7 @@
       "name": "dev-team-view",
       "source": "./mods/dev-team-view",
       "description": "Optional companion mod: a live pane showing which dev-team agents are working, on what, and the messages between them.",
-      "version": "0.1.0"
+      "version": "0.1.1"
     }
   ]
 }
