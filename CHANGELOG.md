@@ -2,7 +2,8 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
-## Unreleased
+## 0.7.0 — 2026-11-24
+The optional team view mod, plus the slice flow and token savings from 0.6.x, in one release.
 - Optional companion mod `dev-team-view` in `mods/dev-team-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.
 - `dev-team-view` 0.1.1: after you close the Team pane, a **Team ▸** button above the prompt reopens it, and `/team` says so when the pane can't be shown instead of always claiming it opened.
 - `dev-team-view` 0.1.2: the drawing was stuck in Desktop's default 150px-tall frame, so it came out tiny. It now sets the frame to the pane's width and the content's height, at a fixed size (1.5 px per drawing unit) so cards and text are readable on any monitor: wider panes fit more cards per row, narrower ones stack them.
