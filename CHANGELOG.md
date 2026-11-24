@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## Unreleased
+- Optional companion mod `dev-team-view` in `mods/dev-team-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.
+
 ## 0.6.1 — 2026-11-24
 Cuts tokens.
 - The whole-diff review after the last slice is skipped when the brief had one slice (it was the same diff reviewed twice).

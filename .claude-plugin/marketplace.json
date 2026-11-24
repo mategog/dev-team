@@ -9,6 +9,12 @@
       "source": "./",
       "description": "A small AI product company in one plugin: product owner, manager, designer, frontend, backend, QA, review, marketing and finance agents.",
       "version": "0.6.1"
+    },
+    {
+      "name": "dev-team-view",
+      "source": "./mods/dev-team-view",
+      "description": "Optional companion mod: a live pane showing which dev-team agents are working, on what, and the messages between them.",
+      "version": "0.1.0"
     }
   ]
 }

@@ -1,0 +1,6 @@
+{
+  "name": "dev-team-view",
+  "version": "0.1.0",
+  "description": "Live team pane: which subagents are working, on what, and the messages between them",
+  "types": "./types/index.d.ts"
+}

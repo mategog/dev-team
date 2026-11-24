@@ -6,7 +6,7 @@
 
 **dev-team is an open-source Claude Code plugin that adds nine specialized subagents — product owner, manager, designer, frontend, backend, QA, code review, marketing and finance — and runs them as one end-to-end workflow:** a one-page brief you approve, then design, build, QA, code review and a local git commit. It's built for solo developers and small teams who want the whole product loop, not just coding.
 
-Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). 9 agents + 3 commands, about 900 tokens added to each session.
+Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). 9 agents + 3 commands, about 900 tokens added to each session. The optional [team view](#optional-team-view) is a separate mod, not part of the plugin.
 
 ## Quick start
 
@@ -65,6 +65,20 @@ flowchart LR
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
 `inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager, frontend or backend spawn another agent, they name its model: that agent's default, or `sonnet` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
+
+## Optional: team view
+
+A separate mod, `dev-team-view`, adds a live **Team** pane next to the chat: a manager desk plus one desk per agent, with who is working (and which tool it just used), who is done or failed, a line between agents for the latest message, and a feed of the last messages between agents. It reads agent start and report events and costs the model no tokens: it adds nothing to the prompt and registers no tool. Type `/team` to open it.
+
+Install it from this same marketplace. In a terminal session:
+
+```
+/plugin install dev-team-view@dev-team
+```
+
+In the desktop app, where `/plugin` doesn't run: click + next to the prompt box, then Plugins, add the marketplace `mategog/dev-team` if it isn't there, then Add plugin `dev-team-view`.
+
+The desk drawing is an SVG, so it shows in the desktop app; the terminal gets a plain list of agents instead. Needs a Claude Code version that supports mods (2.1.287 or newer, desktop app 2.1.286 or newer). Early: it passes its tests and validation, but hasn't yet been watched live with a real build. Source: [mods/dev-team-view](mods/dev-team-view).
 
 ## Commands
 
