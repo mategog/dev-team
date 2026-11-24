@@ -2,6 +2,16 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.7.1 — 2026-11-25
+Cuts tokens, from measuring 149 real agent runs and testing each change.
+- `review`, `backend` and `product` list only the tools they use (`tools:`) instead of inheriting every tool. An agent that inherits everything starts with every installed tool and MCP server in its context: about 95k tokens for `review` on the machine measured, against about 22k with a list. On a test with six seeded defects the reviewer with the list found all of them in 3 of 3 runs, at about half the cost. If your backend work needs another tool (a database or simulator MCP server, say), add its name to `tools:` in `agents/backend.md`.
+- `review` and `backend` no longer spawn copies of themselves. In 62 measured runs neither ever did, and slices keep reviews small.
+- `backend` and `frontend` get an **Output hygiene** section: quiet test output, line-range reads, no re-reads, batched tool calls. About 10% cheaper on the same task in a 3-runs-per-arm test, with every done-check passing.
+- `product` greps the titles and statuses of existing briefs instead of reading every brief in full.
+- Fix loop: the manager spawns a fresh agent with the full brief plus the findings instead of waking the one that built it, whose cache has expired by then.
+- Mechanical helper tasks (searches, renames, running tests) run on Haiku instead of Sonnet.
+- `review` reruns the tests under a second timezone when a change touches dates or times.
+
 ## 0.7.0 — 2026-11-24
 The optional team view mod, plus the slice flow and token savings from 0.6.x, in one release.
 - Optional companion mod `dev-team-view` in `mods/dev-team-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.

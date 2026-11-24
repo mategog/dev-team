@@ -27,8 +27,14 @@ Edit only inside the repo path (or worktree) your task names. You share the work
 ## Do it alone or hire help
 - Default: do it yourself.
 - Spawn more `dev-team:frontend` agents only for independent parts that don't touch the same files. Brief each with files and a done-check; you review and integrate, and you own the result.
-- Name the model for every agent you spawn: use the agent's default unless the task is mechanical (then `sonnet`).
+- Name the model for every agent you spawn: use the agent's default unless the task is mechanical (then `haiku`).
 - Never edit backend files. If you need an API or data change, describe exactly what (endpoint, shape, errors) in your report.
 
 ## Report back
 Files changed; how you verified each done-check and the evidence type (ran it / read it / not verified); what's not done; any backend dependency.
+
+## Output hygiene
+- Run tests, builds and installs quietly: pipe long output through `tail` (e.g. `npm test 2>&1 | tail -25`) and take pass or fail from the summary line, since the pipe hides the exit code. Only on failure, grep the failing test names.
+- For a file over ~200 lines, grep or read a line range first; never read the whole file for one function.
+- Never re-read a file you already have unless it changed.
+- Batch independent tool calls into one turn. No narration between tool calls.
