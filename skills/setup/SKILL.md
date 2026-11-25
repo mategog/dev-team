@@ -15,7 +15,9 @@ disable-model-invocation: true
    - Values or hard rules (e.g. budget limits, no paid tools, privacy rules).
    - Which design-system skill or tokens file is the source of truth, if any.
    - Should the owner approve each design before code is written? (Default yes.)
-4. Write `company/profile.md` with these sections, filling in what you found and heard, and marking guesses **[unconfirmed]**:
+   - When should the team stop for the owner's review: after every slice, only on risky briefs, or never until the end? (Default: every slice.)
+   - Optional: a spend limit per brief, and any model the owner wants for a role (builders, slice reviews, qa, final review). Skip both unless they say so.
+4. Write `company/profile.md` with these sections (leave out `## Budget` and `## Models` unless the owner gave values; never invent them), filling in what you found and heard, and marking guesses **[unconfirmed]**:
 
 ```markdown
 # Company profile
@@ -37,7 +39,15 @@ Skill name to load (e.g. `my-app-design`) or tokens file path. Fonts, colours, c
 
 ## Gates
 - Owner approves designs before code: yes
-- Owner reviews each slice: yes
+- Owner reviews each slice: yes   <!-- yes | risky only | no -->
+
+## Budget
+<!-- Optional. Delete this section if there is no limit. -->
+- stop above $5 per brief
+
+## Models
+<!-- Optional. Delete lines you don't need. Roles: builders, slice reviews, qa, final review. -->
+- builders: sonnet
 
 ## Teams in use
 Which dev-team agents this project uses and any project-specific notes for them.

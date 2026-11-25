@@ -26,6 +26,7 @@ Write `company/briefs/<feature-slug>.md` in exactly this shape:
 ---
 status: draft
 size: normal
+risk: normal
 next: owner approves the brief
 ---
 # <Feature name>
@@ -48,6 +49,7 @@ next: owner approves the brief
 ```
 
 - **Size:** `small` when one builder team can do it with no new screen or visible redesign, no money, and no new dependency or data format; otherwise `normal`. Small skips the plan file and the designer.
+- **Risk:** `high` when the work touches auth, tokens, secrets, payments or money, permissions, personal data, a data migration, or an irreversible or outward-facing action (publishing, sending, deleting, charging); `low` for copy, docs, styling and internal scripts that touch none of those; otherwise `normal`. Risk sets how strongly the work is reviewed and when the owner is asked.
 - **Owner checks:** what agents can't verify — the real device or native window, real accounts, real payments, production. Write "none" if there are none. Never put a check here that qa could run.
 - The plan and log go in `company/briefs/<slug>/` later; don't create them.
 
