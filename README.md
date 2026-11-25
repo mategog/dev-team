@@ -10,9 +10,7 @@ Markdown-only plugin: no hooks, no scripts, no telemetry. Agents never push; eve
 
 Most coding agents start at "write the code". dev-team starts one step earlier and ends one step later: you give it an idea, a **product owner** turns it into a one-page brief you approve, a **designer** specs the screen you approve, **frontend and backend** build it, **QA** tries to break it, **review** reads the diff, and the **manager** hands you a reviewed local commit. It is built for solo developers and small teams who have no product manager, designer or QA engineer on staff.
 
-![Tally habit list with day streaks next to each habit, built by dev-team](examples/demo-run/screens/desktop.png)
-
-*A real run, not a mock-up: "Show each habit's current streak next to its name" on a small habit tracker. About 15 minutes from command to commit (4 of them waiting for the owner's approval), 13/13 tests, QA pass, review approve. One run, on dev-team 0.4.0, and it found four bugs in the plugin itself. The brief, design spec, diff and unedited log are in [examples/demo-run](examples/demo-run/).*
+**A real run, not a mock-up:** "Show each habit's current streak next to its name" on a small habit tracker. About 15 minutes from command to commit (4 of them waiting for the owner's approval), 13/13 tests, QA pass, review approve. One run, on dev-team 0.4.0, and it found four bugs in the plugin itself. The brief, design spec, diff and unedited log are in [examples/demo-run](examples/demo-run/).
 
 ## Try it in two minutes
 
