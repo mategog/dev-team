@@ -57,14 +57,14 @@ flowchart LR
 | `product` | Turns your idea into a one-page brief: problem, premise check, scope, non-goals, done-checks | No | sonnet |
 | `manager` | Plans the work, runs the teams, logs progress, grades findings, commits locally slice by slice. `/dev-team:build` runs its playbook in your main session, so it can stop at your gates and wait for every report. | Integration fixes only | inherit |
 | `designer` | Writes a spec before any new screen; critiques the built UI at 1440 / 768 / 375 px | No — writes `design/` docs only | sonnet |
-| `frontend` | Builds UI to the spec, verifies in the browser | Yes | inherit |
-| `backend` | Logic, APIs, data, scripts, tests | Yes | inherit |
+| `frontend` | Builds UI to the spec, verifies in the browser | Yes | sonnet |
+| `backend` | Logic, APIs, data, scripts, tests | Yes | sonnet |
 | `qa` | Uses the product like a user and tries to break it | No | sonnet |
 | `review` | Reviews the diff: correctness, cheated tests, security, needless code — reports only findings it's 80%+ sure of | No | sonnet |
 | `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager spawns an agent, it names its model: that agent's default, or `haiku` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
+`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager spawns an agent, it names its model: that agent's default, `haiku` for mechanical tasks (searches, renames, running tests), or a stronger model for a hard task or a fix that already failed a round. Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`. The same line in `agents/frontend.md` and `agents/backend.md` puts the builders back on your session's model.
 
 Every agent lists the tools it uses (`tools:` in its file) instead of inheriting all of them, so a spawn doesn't carry every tool and MCP server you have installed. `frontend`, `qa` and `designer` get Claude's built-in browser, the Chrome extension and Playwright. If a role needs something that isn't listed (a database server for `backend`, another browser server for the three browser roles), add its name there, e.g. `mcp__yourserver__*`.
 
@@ -190,7 +190,7 @@ No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo
 It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
 
 ### How much does it cost to run?
-The plugin is free. Runs use your own Claude plan or API usage. Cheaper roles (product, designer, QA, review, marketing, finance) default to Sonnet; manager, frontend and backend inherit your session's model, and helpers doing mechanical work run on Haiku. You can change `model:` in any agent file.
+The plugin is free. Runs use your own Claude plan or API usage. Every agent defaults to Sonnet except the manager, which is your own session; mechanical helper tasks and per-slice reviews run on Haiku when a brief has more than one slice (a Sonnet review of the whole diff follows), and the manager can name a stronger model for a hard task. You can change `model:` in any agent file.
 
 ### Does it work with superpowers or other Claude Code plugins?
 Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
