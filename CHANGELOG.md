@@ -4,10 +4,10 @@ All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.js
 
 ## 0.7.3 — 2026-11-25
 Builders default to Sonnet; slice reviews run on Haiku.
-- `frontend` and `backend` default to Sonnet instead of inheriting the session model. The two builders were 53% of agent cost in 149 measured runs. On three build tasks with hidden acceptance checks (one of them with the edge cases left out of the brief), Sonnet passed every check Opus did in every delivered run, at a third to a half of the cost. Set `model: inherit` in their agent files for the old behaviour.
+- `frontend` and `backend` default to Sonnet instead of inheriting the session model. The two builders were 53% of agent cost in 149 measured runs. On three build tasks with hidden acceptance checks (one of them with the edge cases left out of the brief), Sonnet passed every check Opus did in every delivered run, at a third to a half of the cost. All three test tasks were backend work: `frontend` moves on the same reasoning, with the designer's critique and QA still checking what it builds. Set `model: inherit` in their agent files for the old behaviour.
 - The manager names a stronger model, if you have one, for a builder task it judges hard or for a fix that already failed a round. A report that says blocked or unverified is rerun, not passed.
 - Per-slice reviews run on Haiku when a brief has more than one slice; the review of the whole diff at the end stays on Sonnet, and so does the only review of a one-slice brief, any slice the manager judges hard (security-critical code, money, user data, a migration), and the re-check after a fix. On two independently written fixtures (16 seeded defects, 7 runs per model) Haiku found 56 of 58 and Sonnet 56 of 58, at roughly a seventh of the cost; a Haiku review plus a Sonnet review together caught every defect.
-- Builders create and change files with Edit and Write, never with shell heredocs. In the tests half the Sonnet runs wrote files through heredocs, which the shell's safety check can refuse; with this line none did.
+- Builders create and change files with Edit and Write, never with shell heredocs. In the tests 7 of 14 Sonnet runs tried to write files through heredocs, which the shell's safety check can refuse, and 4 of them delivered nothing. With this line in the agent file, all 3 Sonnet runs on the task that stalled most delivered and passed every check.
 
 ## 0.7.2 — 2026-11-25
 The other three agents get tool lists too.

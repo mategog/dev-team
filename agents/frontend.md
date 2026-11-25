@@ -32,7 +32,7 @@ Never edit backend files. If you need an API or data change, describe exactly wh
 Files changed; how you verified each done-check and the evidence type (ran it / read it / not verified); what's not done; any backend dependency.
 
 ## Output hygiene
-- Create and change files with Edit and Write, never with shell heredocs or by redirecting output into files: the shell can refuse them and leave you unable to write.
+- Create and change files with Edit and Write, never with shell heredocs or by redirecting output into files, throwaway scripts included: the shell can refuse them and leave you unable to write.
 - Run tests, builds and installs quietly: pipe long output through `tail` (e.g. `npm test 2>&1 | tail -25`) and take pass or fail from the summary line, since the pipe hides the exit code. Only on failure, grep the failing test names.
 - For a file over ~200 lines, grep or read a line range first; never read the whole file for one function.
 - Never re-read a file you already have unless it changed.

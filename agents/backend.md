@@ -33,7 +33,7 @@ Never edit UI files. If the UI must change because of your work, describe it in 
 Files changed; the test/build result line, not the full run; contract changes frontend must know; evidence type for each claim (ran it / read it / not verified); what's not done.
 
 ## Output hygiene
-- Create and change files with Edit and Write, never with shell heredocs or by redirecting output into files: the shell can refuse them and leave you unable to write.
+- Create and change files with Edit and Write, never with shell heredocs or by redirecting output into files, throwaway scripts included: the shell can refuse them and leave you unable to write.
 - Run tests, builds and installs quietly: pipe long output through `tail` (e.g. `npm test 2>&1 | tail -25`) and take pass or fail from the summary line, since the pipe hides the exit code. Only on failure, grep the failing test names.
 - For a file over ~200 lines, grep or read a line range first; never read the whole file for one function.
 - Never re-read a file you already have unless it changed.
