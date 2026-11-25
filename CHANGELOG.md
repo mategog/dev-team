@@ -2,6 +2,10 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.7.4 — 2026-11-25
+Riskier briefs get a stronger final review.
+- When a brief touches security, money or user data (auth, tokens, secrets, payments, permissions, personal data), the whole-diff review always runs, even for a one-slice brief, on the strongest model you have (e.g. Opus), plus a second review on the default model (for a one-slice brief, its slice review); the manager merges their findings. Tested on a module with 10 planted security bugs (OAuth state bypass, token in logs and in a world-readable file, timing-unsafe HMAC check, path traversal, shell and SQL injection, open redirect, pickle from `/tmp`), two runs per model: Opus and Sonnet each found all 10 in both runs. Opus also reproduced every finding with a working exploit and found real issues beyond the planted ones (a draft-export traversal that reads the saved tokens; a token saved without `expires_at`, so the app never stays signed in). Sonnet found them by reading. Cost per review: Opus $0.49–0.72, Sonnet $0.17. On the real code of an earlier build, separate review runs caught different bugs, which is why the second review is there.
+
 ## 0.7.3 — 2026-11-25
 Builders default to Sonnet; slice reviews run on Haiku.
 - `frontend` and `backend` default to Sonnet instead of inheriting the session model. The two builders were 53% of agent cost in 149 measured runs. On three build tasks with hidden acceptance checks (one of them with the edge cases left out of the brief), Sonnet passed every check Opus did in every delivered run, at a third to a half of the cost. All three test tasks were backend work: `frontend` moves on the same reasoning, with the designer's critique and QA still checking what it builds. Set `model: inherit` in their agent files for the old behaviour.
