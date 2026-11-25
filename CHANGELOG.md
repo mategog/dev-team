@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `plugins/dev-team/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.10.1 — 2026-11-25
+- **You confirm the risk call at the brief gate.** The gate shows which of the six risk triggers fired (or that none did) and asks you to confirm it or name one that applies; the log records `risk confirmed by owner` or `risk changed by owner: old → new`. Why: no real brief so far had an owner-checked risk label, so there was no way to tell how often Claude's call is wrong. Not yet run on a real build.
+
 ## 0.10.0 — 2026-11-25
 Measured against a plain session, and the findings acted on.
 - **A benchmark** ([benchmark/](benchmark/README.md)): 5 medium and 2 large backend features, 3 to 4 arms, hidden acceptance checks and a blind code-quality judge. Result: every arm got every check right, so on specified backend work the team's main gain is review, not correctness, at 3.5 to 4.5x the cost. The plugin README now has a "When to use it, and when not to" section built on it.

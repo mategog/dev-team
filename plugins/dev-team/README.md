@@ -198,7 +198,7 @@ Add optional sections to `company/profile.md` (`/dev-team:setup` asks for them):
 - `## Models`: one line per role, e.g. `builders: opus`, `slice reviews: sonnet`, `qa: haiku`, `final review: opus`. Unlisted roles keep the defaults. This survives plugin updates, unlike editing the agent files.
 - `## Budget`: `stop above $5 per brief`. The manager keeps a running estimate from each agent's token count (blended rates fitted on 94 runs on one machine, not list prices; a single agent's figure can be off by half and a build's total by about a quarter, and short runs come out up to twice too high, so it errs toward stopping early) and stops to ask before the next agent once it's over. The final report ends with a cost line, labelled an estimate.
 - `company/preferences.md`: up to 20 lines of ways you want things done. The manager reads it first, and offers to add a line when you correct the same thing twice (it writes only after you say yes).
-- Each brief carries `risk: low | normal | high`, set by the product agent. `high` briefs get the strongest-model final review and a stop after each slice if your gate says `risky only`.
+- Each brief carries `risk: low | normal | high`, set by the product agent with the trigger that fired; you confirm or correct it when you approve the brief, and the log records which. `high` briefs get the strongest-model final review and a stop after each slice if your gate says `risky only`.
 
 ### Does it work with superpowers or other Claude Code plugins?
 Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
