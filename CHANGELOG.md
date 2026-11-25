@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.7.5 — 2026-11-25
+- The manager's list of mechanical tasks for Haiku now names generating test data from a clear recipe (large fixture sets, sample files, fake records). Small fixtures stay inside the builder's own run, where a separate spawn would cost more than it saves. The tests that prove the done-checks are still written by the builder.
+
 ## 0.7.4 — 2026-11-25
 Riskier briefs get a stronger final review.
 - When a brief touches security, money or user data (auth, tokens, secrets, payments, permissions, personal data), the whole-diff review always runs, even for a one-slice brief, on the strongest model you have (e.g. Opus), plus a second review on the default model (for a one-slice brief, its slice review); the manager merges their findings. Tested on a module with 10 planted security bugs (OAuth state bypass, token in logs and in a world-readable file, timing-unsafe HMAC check, path traversal, shell and SQL injection, open redirect, pickle from `/tmp`), two runs per model: Opus and Sonnet each found all 10 in both runs. Opus also reproduced every finding with a working exploit and found real issues beyond the planted ones (a draft-export traversal that reads the saved tokens; a token saved without `expires_at`, so the app never stays signed in). Sonnet found them by reading. Cost per review: Opus $0.49–0.72, Sonnet $0.17. On the real code of an earlier build, separate review runs caught different bugs, which is why the second review is there.
