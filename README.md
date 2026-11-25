@@ -64,9 +64,9 @@ flowchart LR
 | `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
 | `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
 
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager or frontend spawn another agent, they name its model: that agent's default, or `haiku` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
+`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager spawns an agent, it names its model: that agent's default, or `haiku` for mechanical tasks (searches, renames, running tests). Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`.
 
-`review`, `backend`, `product`, `manager`, `marketing` and `finance` list their tools (`tools:` in each file) instead of inheriting all of them, so a spawn doesn't carry every tool and MCP server you have installed. If `backend` needs one that isn't listed (a database server, say), add its name there, e.g. `mcp__yourserver__*`. `frontend`, `qa` and `designer` still inherit everything, because they need whichever browser tools you have.
+Every agent lists the tools it uses (`tools:` in its file) instead of inheriting all of them, so a spawn doesn't carry every tool and MCP server you have installed. `frontend`, `qa` and `designer` get Claude's built-in browser, the Chrome extension and Playwright. If a role needs something that isn't listed (a database server for `backend`, another browser server for the three browser roles), add its name there, e.g. `mcp__yourserver__*`.
 
 ## Optional: team view
 

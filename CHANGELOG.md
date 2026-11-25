@@ -2,6 +2,12 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.7.2 — 2026-11-25
+The other three agents get tool lists too.
+- `frontend`, `qa` and `designer` list their tools, including the browser servers they test with: Claude's built-in browser, the Chrome extension and Playwright (`mcp__Claude_Browser__*`, `mcp__claude-in-chrome__*`, `mcp__playwright__*`). Checked in the desktop app: the listed agents see and can call the browser tools. Starting size on the machine measured: `qa` about 39k tokens (was 92k), `frontend` about 55k (was 110k), `designer` about 68k (was 105k). If you test with another browser server, add its name to `tools:` in those three files.
+- `frontend` no longer spawns copies of itself: it never did in 11 measured runs. Now only the manager spawns agents.
+- `designer` no longer has the `Artifact` tool. Its instructions never asked for mockups, it used the tool in 5 of 20 measured runs, and it costs about 18k tokens on every designer spawn. If you want published mockups back, add `Artifact` to `tools:` in `agents/designer.md`.
+
 ## 0.7.1 — 2026-11-25
 Cuts tokens, from measuring 149 real agent runs and testing each change.
 - `review`, `backend` and `product` list only the tools they use (`tools:`) instead of inheriting every tool. An agent that inherits everything starts with every installed tool and MCP server in its context: about 95k tokens for `review` on the machine measured, against about 22k with a list. On a test with six seeded defects the reviewer with the list found all of them in 3 of 3 runs, at about half the cost. If your backend work needs another tool (a database or simulator MCP server, say), add its name to `tools:` in `agents/backend.md`.

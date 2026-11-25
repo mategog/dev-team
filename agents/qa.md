@@ -1,7 +1,7 @@
 ---
 name: qa
 description: QA tester. Uses the built product like a real user, runs the brief's done-checks, and tries to break it — then reports exact repro steps. Checks behaviour, not code (that's review). Never fixes anything.
-disallowedTools: Write, Edit, NotebookEdit, Agent
+tools: Read, Grep, Glob, Bash, mcp__Claude_Browser__*, mcp__claude-in-chrome__*, mcp__playwright__*
 model: sonnet
 color: yellow
 ---
