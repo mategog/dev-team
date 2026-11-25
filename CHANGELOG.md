@@ -3,12 +3,12 @@
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
 ## 0.9.0 — 2026-11-25
-Tune the team from the profile. Each item was checked with a headless run before shipping (small samples).
+Tune the team from the profile. Each item was checked with the maintainer's headless runs before shipping; the run logs are not in this repo, and every sample is small.
 - **`## Models` in `company/profile.md`**: pick the model per role (`builders`, `slice reviews`, `qa`, `final review`). Survives plugin updates, unlike editing agent files. In two runs the manager spawned the builder on Haiku and the slice review on Sonnet as the profile said, the opposite of the agent defaults.
-- **`## Budget`**: `stop above $5 per brief`. The manager keeps a running estimate from agent token counts and stops to ask before the next agent once it's over. It stopped as asked in the one run that set a limit. The estimate uses list prices from one machine: right within 2% on an 11-agent build and six QA runs, but about twice too high on a small two-agent run, so it errs toward stopping early.
+- **`## Budget`**: `stop above $5 per brief`. The manager keeps a running estimate from agent token counts and stops to ask before the next agent once it's over. It stopped as asked in the one run that set a limit. The estimate uses blended per-token rates measured on one machine, not list prices (Sonnet and Haiku measured, Opus from two runs, Fable a guess): right within 2% on an 11-agent build and six QA runs, but about twice too high on a small two-agent run, so it errs toward stopping early.
 - **Cost line** at the end of the manager's report: each agent run with model and tokens, and the estimated total, labelled an estimate.
 - **`risk: low | normal | high` in each brief**, set by the product agent. On six ideas of known risk it matched five (a CSV export of the user's own tasks was rated high, with a stated reason) and rated no high-risk idea low. The manager can raise a brief's risk, never lower it. In the gift-cards test two runs judged the same brief differently (one raised it to high), so the call is not stable.
-- **`Owner reviews each slice: risky only`** as a gate (`/dev-team:setup` now asks when to stop for you). Both runs stopped or didn't stop consistently with their own risk call.
+- **`Owner reviews each slice: risky only`** as a gate (`/dev-team:setup` now asks when to stop for you). One run judged the brief risky and stopped after slice 1; the other judged it not risky and went on. A brief with no `risk:` field falls back to the topic test (security, money, user data); that case was not run.
 - **`company/preferences.md`**: ways you want things done, read first by the manager. Both runs followed a test preference. The manager offers to add a line after you correct the same thing twice and writes only after your yes; that path was not exercised, and whether it helps is unproven.
 
 ## 0.8.0 — 2026-11-25

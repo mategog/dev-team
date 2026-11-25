@@ -196,7 +196,7 @@ The plugin is free. Runs use your own Claude plan or API usage. Every agent defa
 Add optional sections to `company/profile.md` (`/dev-team:setup` asks for them):
 - `## Gates`: `Owner reviews each slice: yes`, `risky only` or `no`.
 - `## Models`: one line per role, e.g. `builders: opus`, `slice reviews: sonnet`, `qa: haiku`, `final review: opus`. Unlisted roles keep the defaults. This survives plugin updates, unlike editing the agent files.
-- `## Budget`: `stop above $5 per brief`. The manager keeps a running estimate from each agent's token count (list prices from one machine; in tests the total came out from about right to about twice too high, so it errs toward stopping early) and stops to ask before the next agent once it's over. The final report ends with a cost line, labelled an estimate.
+- `## Budget`: `stop above $5 per brief`. The manager keeps a running estimate from each agent's token count (blended rates measured on one machine, not list prices; Opus rests on two runs and Fable is a guess; in tests the Sonnet and Haiku total came out from about right to about twice too high, so it errs toward stopping early) and stops to ask before the next agent once it's over. The final report ends with a cost line, labelled an estimate.
 - `company/preferences.md`: up to 20 lines of ways you want things done. The manager reads it first, and offers to add a line when you correct the same thing twice (it writes only after you say yes).
 - Each brief carries `risk: low | normal | high`, set by the product agent. `high` briefs get the strongest-model final review and a stop after each slice if your gate says `risky only`.
 
