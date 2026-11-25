@@ -49,7 +49,14 @@ next: owner approves the brief
 ```
 
 - **Size:** `small` when one builder team can do it with no new screen or visible redesign, no money, and no new dependency or data format; otherwise `normal`. Small skips the plan file and the designer.
-- **Risk:** `high` when the work touches auth, tokens, secrets, payments or money, permissions, personal data, a data migration, or an irreversible or outward-facing action (publishing, sending, deleting, charging); `low` for copy, docs, styling and internal scripts that touch none of those; otherwise `normal`. Risk sets how strongly the work is reviewed and when the owner is asked.
+- **Risk:** `high` when the work creates or changes code that does any of these, and write the trigger after it, e.g. `risk: high (3: gift card balance)`:
+  1. sign-in, sessions, passwords, API keys, tokens or other secrets;
+  2. who may see or do what (permissions, roles, access checks);
+  3. money or stored value: prices charged, payments, refunds, balances, credits, gift cards, invoices, payouts, even in a library or a prototype;
+  4. personal data of real people: stored, exported or sent elsewhere;
+  5. deleting or migrating stored data;
+  6. acting outside the app: publishing, sending messages, or calling a third-party API that changes something.
+  `low` for copy, docs, styling and internal scripts that match none of the six; otherwise `normal`. Go by the list, not by how dangerous the feature feels. Risk sets how strongly the work is reviewed and when the owner is asked.
 - **Owner checks:** what agents can't verify — the real device or native window, real accounts, real payments, production. Write "none" if there are none. Never put a check here that qa could run.
 - The plan and log go in `company/briefs/<slug>/` later; don't create them.
 
