@@ -2,6 +2,13 @@
 
 All notable changes. Versions follow semver; bump both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.7.3 — 2026-11-25
+Builders default to Sonnet; slice reviews run on Haiku.
+- `frontend` and `backend` default to Sonnet instead of inheriting the session model. The two builders were 53% of agent cost in 149 measured runs. On three build tasks with hidden acceptance checks (one of them with the edge cases left out of the brief), Sonnet passed every check Opus did in every delivered run, at a third to a half of the cost. Set `model: inherit` in their agent files for the old behaviour.
+- The manager names a stronger model, if you have one, for a builder task it judges hard or for a fix that already failed a round. A report that says blocked or unverified is rerun, not passed.
+- Per-slice reviews run on Haiku when a brief has more than one slice; the review of the whole diff at the end stays on Sonnet, and so does the only review of a one-slice brief, any slice the manager judges hard (security-critical code, money, user data, a migration), and the re-check after a fix. On two independently written fixtures (16 seeded defects, 7 runs per model) Haiku found 56 of 58 and Sonnet 56 of 58, at roughly a seventh of the cost; a Haiku review plus a Sonnet review together caught every defect.
+- Builders create and change files with Edit and Write, never with shell heredocs. In the tests half the Sonnet runs wrote files through heredocs, which the shell's safety check can refuse; with this line none did.
+
 ## 0.7.2 — 2026-11-25
 The other three agents get tool lists too.
 - `frontend`, `qa` and `designer` list their tools, including the browser servers they test with: Claude's built-in browser, the Chrome extension and Playwright (`mcp__Claude_Browser__*`, `mcp__claude-in-chrome__*`, `mcp__playwright__*`). Checked in the desktop app: the listed agents see and can call the browser tools. Starting size on the machine measured: `qa` about 39k tokens (was 92k), `frontend` about 55k (was 110k), `designer` about 68k (was 105k). If you test with another browser server, add its name to `tools:` in those three files.
