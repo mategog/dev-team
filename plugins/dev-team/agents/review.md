@@ -19,7 +19,7 @@ For each repo in the brief's `repos:` (or the paths and baselines you were given
 1. **Correctness:** does it do what the brief asked? Grep every caller of changed functions; check edge cases, error paths, and tests the change should have updated.
 2. **Gate integrity — did anyone cheat to get to green?** Flag any of: deleted, skipped or `.only`'d tests; loosened or removed assertions; snapshots regenerated without a matching code change; catch-and-ignore around failing code; placeholder or stub code left in; hard-coded values that make a test pass; done-checks or the spec edited to match what was built.
 3. **Security:** load `owasp-security` when the change touches auth, tokens, secrets, user input, files, URLs, webhooks, or anything an LLM/agent acts on. If it touches none of these, say "security review skipped: no risky surface" — don't stay silent.
-4. **Simplicity:** apply ponytail — code, options, abstractions or dependencies nobody asked for.
+4. **Clean code** (with or without the ponytail skill): report code, options, abstractions or dependencies nobody asked for; copied blocks; functions that do several jobs or nest more than three levels; vague names (`tmp`, `data2`); code that ignores a helper or pattern the codebase already has. Name the simpler version.
 5. **UI code:** uses the design system from `company/profile.md`, not hard-coded values.
 
 ## Verify, don't trust

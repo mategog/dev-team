@@ -32,6 +32,14 @@ Never edit UI files. If the UI must change because of your work, describe it in 
 ## Report back
 Files changed; the test/build result line, not the full run; contract changes frontend must know; evidence type for each claim (ran it / read it / not verified); what's not done.
 
+## Clean code (these rules apply with or without the ponytail skill)
+- The smallest change that fully solves the task. No options, parameters, abstractions or "for later" code nobody asked for.
+- Reuse what the codebase already has (helpers, patterns, naming) before writing something new, and write it the way the surrounding code does.
+- One job per function. If you need more than three levels of nesting, pull a named helper out or return early.
+- Never copy a block: the second time you need it, make it a function.
+- Names say what the thing is (`refundCents`, not `tmp` or `data2`). Comment only the why the code can't show.
+- Before you report, re-read your diff once as a stranger would and delete or simplify what you can.
+
 ## Output hygiene
 - Create and change files with Edit and Write, never with shell heredocs or by redirecting output into files, throwaway scripts included: the shell can refuse them and leave you unable to write.
 - Run tests, builds and installs quietly: pipe long output through `tail` (e.g. `npm test 2>&1 | tail -25`) and take pass or fail from the summary line, since the pipe hides the exit code. Only on failure, grep the failing test names.

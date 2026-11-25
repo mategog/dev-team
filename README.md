@@ -1,218 +1,112 @@
-# dev-team — an AI dev team for Claude Code
+# dev-team
+
+**Nine markdown subagents for the whole product loop: brief, design, build, QA, review, local commit.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/github/v/tag/mategog/dev-team?label=version)](CHANGELOG.md)
 [![validate](https://github.com/mategog/dev-team/actions/workflows/validate.yml/badge.svg)](https://github.com/mategog/dev-team/actions/workflows/validate.yml)
+[![Changelog](https://img.shields.io/badge/changelog-read-informational.svg)](CHANGELOG.md)
 
-**dev-team is an open-source Claude Code plugin that adds nine specialized subagents — product owner, manager, designer, frontend, backend, QA, code review, marketing and finance — and runs them as one end-to-end workflow:** a one-page brief you approve, then design, build, QA, code review and a local git commit. It's built for solo developers and small teams who want the whole product loop, not just coding.
+Markdown-only plugin: no hooks, no scripts, no telemetry. Agents never push; every commit stays on your machine. CI fails the build if the plugin ever gains a non-markdown file.
 
-Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). 9 agents + 3 commands, about 900 tokens added to each session. The optional [team view](#optional-team-view) is a separate mod, not part of the plugin.
-
-## Quick start
-
-1. Add the marketplace and install the plugin in Claude Code:
-   ```
-   /plugin marketplace add mategog/dev-team
-   /plugin install dev-team@dev-team
-   ```
-2. Start a new Claude Code session.
-3. In your project, run `/dev-team:setup` once — it writes `company/profile.md`, which every agent reads.
-4. Run `/dev-team:build <your idea>`, approve the brief, and let the team work. `/dev-team:status` shows progress.
-
----
-
-## A real run
+Most coding agents start at "write the code". dev-team starts one step earlier and ends one step later: you give it an idea, a **product owner** turns it into a one-page brief you approve, a **designer** specs the screen you approve, **frontend and backend** build it, **QA** tries to break it, **review** reads the diff, and the **manager** hands you a reviewed local commit. It is built for solo developers and small teams who have no product manager, designer or QA engineer on staff.
 
 ![Tally habit list with day streaks next to each habit, built by dev-team](examples/demo-run/screens/desktop.png)
 
-The first end-to-end `/dev-team:build` on a tiny habit tracker: *"Show each habit's current streak next to its name."* **About 15 minutes** from command to local commit (4 of them waiting for approval), **13/13 tests**, QA `pass`, review `approve`, designer `looks right`. The brief, design spec, code diff and an honest run log — including the plugin bugs it found — are in [examples/demo-run](examples/demo-run/).
+*A real run, not a mock-up: "Show each habit's current streak next to its name" on a small habit tracker. About 15 minutes from command to commit (4 of them waiting for the owner's approval), 13/13 tests, QA pass, review approve. One run, on dev-team 0.4.0, and it found four bugs in the plugin itself. The brief, design spec, diff and unedited log are in [examples/demo-run](examples/demo-run/).*
+
+## Try it in two minutes
+
+```
+/plugin marketplace add mategog/dev-team
+/plugin install dev-team@dev-team
+```
+
+Start a new Claude Code session, then in your project:
+
+```
+/dev-team:setup                 # once: writes company/profile.md, which every agent reads
+/dev-team:build <your idea>     # approve the brief, approve the design, let the team work
+```
+
+**Check the result:** open the brief in `company/briefs/`, read the diff, and run `git log` on the `dev-team/<feature>` branch. That is all it changed. Stop there; `/dev-team:status` shows what is in progress or waiting for you.
+
+Already installed? Third-party marketplaces don't auto-update by default: run `/plugin marketplace update dev-team`, then `claude plugin update dev-team@dev-team`, and start a new session.
+
+## Why use it
+
+- **You stay the owner, and it can show where.** Nothing is built until you approve the brief, and UI isn't coded until you approve the design. The approved scope is frozen: agents are told never to edit it to match what they built. (These gates are instructions the agents follow, not hard blocks; the [plugin reference](plugins/dev-team/README.md#what-is-enforced-and-what-isnt) spells out exactly what Claude Code enforces.)
+- **It covers the jobs you don't have a person for.** A designer who writes a spec and then critiques the built screen at three widths. A QA tester who uses the product like a user. A reviewer who flags deleted tests, loosened assertions and swallowed errors. Pricing and launch-copy agents when a brief touches money.
+- **Your repo is safe from it.** It works on a local `dev-team/<feature>` branch, or a git worktree beside your repo if you have uncommitted work. It is told never to push, merge, tag or deploy. You decide what leaves your machine.
+- **You can read all of it.** Twelve markdown files. No installer, no background process, no network calls from the plugin itself (the product, marketing and finance agents use web search for research). The bar for adding anything is "does a solo builder clearly need this?" ([CONTRIBUTING](CONTRIBUTING.md)).
+- **It tells you what it costs and what it did not prove.** In the [benchmark](benchmark/README.md), a plain session, Anthropic's feature-dev plugin and dev-team all passed every hidden acceptance check on well-specified backend features, so dev-team does not claim better correctness. It cost about 3.5 times as much ($0.75 against $0.22 per medium feature) and took longer; in those headless runs the product and QA agents were never spawned, so what was measured is the backend and review agents, not the full team. What the extra spend bought was the review: on the hard features it flagged "changes needed" in 3 of 8 runs, with defects no acceptance check covered (whether a plain session shares them was not checked). Backend only, four to ten runs per cell. Model choices elsewhere were tested the same way, with sample sizes printed in the [CHANGELOG](CHANGELOG.md), and you can override any role or set a budget in `company/profile.md`.
+- **It resumes where it stopped.** Each brief records its status, next step and each repo's branch and baseline commit, so a crash or a new day doesn't lose the build.
+
+**Not for you if** you want one-line scripts (a plain prompt is faster), a push-to-production autopilot, or a guarantee of better code. dev-team does not claim better code or faster delivery than a good prompt (it was slower and dearer in its own benchmark); it gives the work a brief, a design, a test run and a second pair of eyes. If the task is already fully specified and backend-only, a plain session may be all you need.
 
 ## How a build runs
 
-```mermaid
-flowchart LR
-  A[Your idea] --> P[product: one-page brief]
-  P --> G{You approve?}
-  G -- change --> P
-  G -- yes --> M[plan + local branch<br/>or worktree per repo]
-  M --> F[finance + marketing<br/>if money is involved]
-  M --> D[designer: spec<br/>if UI changes]
-  D --> DG{You approve<br/>the design?}
-  DG -- yes --> FE[frontend]
-  M --> BE[backend]
-  M -- small brief:<br/>one builder, review --> R
-  FE --> Q[qa: use it, break it]
-  BE --> Q
-  Q --> R[review: diff since baseline]
-  R --> C[designer: critique the built UI]
-  C --> X{All pass?}
-  X -- no, max 3 rounds --> FE
-  X -- yes --> K[local commit + summary]
 ```
+idea → brief → you approve → plan → design → you approve → build → QA → review → local commit
+```
+
+Small briefs (one builder team, no new screen, no money, no new dependency) skip the plan and the designer. The full flow chart, the agent roster and every rule are in the [plugin reference](plugins/dev-team/README.md).
 
 ## The team
 
-| Agent | Job | Edits code? | Default model |
-|---|---|---|---|
-| `product` | Turns your idea into a one-page brief: problem, premise check, scope, non-goals, done-checks | No | sonnet |
-| `manager` | Plans the work, runs the teams, logs progress, grades findings, commits locally slice by slice. `/dev-team:build` runs its playbook in your main session, so it can stop at your gates and wait for every report. | Integration fixes only | inherit |
-| `designer` | Writes a spec before any new screen; critiques the built UI at 1440 / 768 / 375 px | No — writes `design/` docs only | sonnet |
-| `frontend` | Builds UI to the spec, verifies in the browser | Yes | sonnet |
-| `backend` | Logic, APIs, data, scripts, tests | Yes | sonnet |
-| `qa` | Uses the product like a user and tries to break it | No | sonnet |
-| `review` | Reviews the diff: correctness, cheated tests, security, needless code — reports only findings it's 80%+ sure of | No | sonnet |
-| `marketing` | Competitor feature matrix, launch and store copy, customer research | No code | sonnet |
-| `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets. Not tax advice. | No code | sonnet |
-
-`inherit` uses your session's model; `sonnet` keeps cheaper roles cheap. When the manager spawns an agent, it names its model: that agent's default, `haiku` for mechanical tasks (searches, renames, running tests, generating test data from a clear recipe) and for QA on a brief with no screen, or a stronger model for a hard task or a fix that already failed a round. When a brief touches security, money or user data, the final review also runs on the strongest model you have, next to the default-model review. Change `model:` in any agent file to suit your plan. Want a stricter reviewer or a more opinionated designer? Set `model: inherit` in `agents/review.md` or `agents/designer.md`. The same line in `agents/frontend.md` and `agents/backend.md` puts the builders back on your session's model.
-
-Every agent lists the tools it uses (`tools:` in its file) instead of inheriting all of them, so a spawn doesn't carry every tool and MCP server you have installed. `frontend`, `qa` and `designer` get Claude's built-in browser, the Chrome extension and Playwright. If a role needs something that isn't listed (a database server for `backend`, another browser server for the three browser roles), add its name there, e.g. `mcp__yourserver__*`.
-
-## Optional: team view
-
-A separate mod, `dev-team-view`, adds a live **Team** pane next to the chat: a manager desk plus one desk per agent, with who is working (and which tool it just used), who is done or failed, a line between agents for the latest message, and a feed of the last messages between agents. It reads agent start and report events and costs the model no tokens: it adds nothing to the prompt and registers no tool. Type `/team` to open it; if you close the pane, a **Team ▸** button appears above the prompt to bring it back.
-
-Install it from this same marketplace. In a terminal session:
-
-```
-/plugin install dev-team-view@dev-team
-```
-
-In the desktop app, where `/plugin` doesn't run: click + next to the prompt box, then Plugins, add the marketplace `mategog/dev-team` if it isn't there, then Add plugin `dev-team-view`.
-
-The desk drawing is an SVG, so it shows in the desktop app; the terminal gets a plain list of agents instead. Needs a Claude Code version that supports mods (2.1.287 or newer, desktop app 2.1.286 or newer). Early: it passes its tests and validation, but hasn't yet been watched live with a real build. Source: [mods/dev-team-view](mods/dev-team-view).
-
-## Commands
-
-| Command | What it does |
+| Agent | Job |
 |---|---|
-| `/dev-team:setup` | Asks a few questions and writes `company/profile.md`: product, brand, values, stack, design system. Every agent reads it first. |
-| `/dev-team:build <idea>` | The whole pipeline above. Resumes an unfinished build if there is one. |
-| `/dev-team:status` | What's in progress, done, stopped, and waiting on you. |
+| `product` | Turns your idea into a one-page brief: problem, scope, non-goals, done-checks |
+| `manager` | Plans the work, runs the other agents, tracks progress, commits locally |
+| `designer` | Writes the spec before any new screen; critiques the built UI afterwards |
+| `frontend` | Builds the UI to the spec and checks it in a browser |
+| `backend` | Logic, APIs, data, scripts and tests |
+| `qa` | Uses the product like a user and tries to break it |
+| `review` | Reads the diff for bugs, security holes, cheated tests, needless code |
+| `marketing` | Competitor matrix, launch and store copy, customer research |
+| `finance` | Pricing, fee comparisons, break-even and scenario spreadsheets (not tax advice) |
 
-You can also call any agent directly, e.g. "use dev-team:finance to compare Paddle and Stripe at €29".
+You can also call any one directly: "use dev-team:finance to compare Paddle and Stripe at €29".
 
-## What it keeps in your repo
+## Two parts, one repo
 
-```
-company/
-  profile.md            who you are and how you build (read by every agent)
-  decisions.md          one line per decision: date · decision · why
-  briefs/<feature>.md   status, size, next step, repos; frozen approved scope; owner checks
-  briefs/<feature>/     plan.md and log.md (one short line per step)
-  marketing/            competitor profiles and feature matrix
-  finance/<topic>.xlsx  models with Inputs / Scenarios / Sensitivity / Checks sheets
-design/
-  <feature>-spec.md     designer → frontend handoff
-  <feature>-critique.md designer's review of the built UI
-```
-
-Brief statuses: `draft` → `approved` → `building` → `testing` → `done`, plus `waiting-owner`, `parked`, `stopped` and `superseded`; `next:` says in one line what happens next and who does it. Each repo the build touches is listed with its path (repo or worktree), branch and baseline commit, so a build interrupted by a crash, a compaction or a new day picks up where it stopped — including builds that span several repos.
-
-**Small briefs** (one builder team, no new screen, no money, no new dependency) skip the plan and the designer: one builder, then review, plus QA when users see the change.
-
-## Rules the agents follow
-
-- **You approve the brief before anything is built.** Its scope is then frozen; agents are told never to edit it to match what they built.
-- **You approve the design before UI code is written**, unless `company/profile.md` turns that gate off.
-- **You review the build one slice at a time** (about 500 changed lines each, with a review map), unless `company/profile.md` turns that gate off.
-- **Owner checks stay yours.** The brief lists what only you can verify (real device, real accounts, payments); agents never fake them, and the summary lists the open ones before offering to push or merge.
-- **Git safety.** Never touches your uncommitted work: a repo that's dirty or busy with another build gets a git worktree beside it. Works on a local `dev-team/<feature>` branch. Builders never run `git checkout --`, `restore`, `reset --hard`, `clean` or `stash` (they share one folder). Only the manager commits, locally. **Nothing is ever pushed, merged, tagged or deployed** without you.
-- **No cheating to green.** Review flags deleted or skipped tests, loosened assertions, regenerated snapshots, swallowed errors, placeholder code, and specs edited to match the build. A run with zero tests is not a pass.
-- **Bug fixes start with a failing test.** A check that couldn't have failed proves nothing.
-- **Fix loops stop after 3 rounds** and hand the open findings to you.
-- **Every claim says what it rests on:** ran it / read it / not verified.
-- **No invented numbers** in marketing or finance: every figure is verified (source + date), an estimate, or a labelled assumption.
-
-## What is enforced, and what isn't
-
-Claude Code enforces each agent's **tool list**, and that's all:
-- `qa` and `review` can't use Write/Edit — but keep a terminal to run tests, so "never change files" is still an instruction for them.
-- `designer` can't Edit or use a terminal, but can Write (for its `design/` docs) — staying in `design/` is an instruction.
-- `product`, `marketing` and `finance` can write files (and finance has a terminal for spreadsheets); staying in `company/` is an instruction.
-
-Everything else above — approval and design gates, frozen scope, git rules, 3-round cap, no cheating — is an **instruction** the agents follow, not a hard gate. If you want hard blocks, add your own hooks (e.g. with Anthropic's `hookify` plugin).
-
-## Recommended skills
-
-Agents preload or load these when present. Install them in `~/.claude/skills/` (read each one first — they're third-party):
-
-| Skill | Used by | Source |
+| | **[Plugin](plugins/dev-team/)** | **[Mod: Team pane](mods/dev-team-view/)** |
 |---|---|---|
-| `ponytail` | manager, frontend, backend, review | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) — copy `skills/ponytail` only |
-| `interface-design` | designer | [Dammyjay93/interface-design](https://github.com/Dammyjay93/interface-design) |
-| `make-interfaces-feel-better` | designer | [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) |
-| `emil-design-eng` | designer (motion) | [emilkowalski/skills](https://github.com/emilkowalski/skills) |
-| `pricing`, `competitor-profiling`, `customer-research` | finance, marketing | [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) |
-| `owasp-security` | review, backend (security checks) | an OWASP security-review skill of your choice (e.g. from the Claude plugin directory) |
-| `frontend-design` | designer (new visual direction) | Anthropic's [frontend-design](https://github.com/anthropics/claude-plugins-official) plugin |
-| `audit-xls` | finance | [anthropics/financial-services-plugins](https://github.com/anthropics/financial-services-plugins) — copy `audit-xls/SKILL.md` only |
-| `xlsx` | finance | Anthropic's document skills (may appear as `anthropic-skills:xlsx`) |
-| `design`, `marketing`, `data` plugins | designer, marketing, finance — optional | Anthropic's knowledge-work plugins |
+| What it is | The nine agents and the `/dev-team:build`, `:setup` and `:status` commands | A live pane next to the chat: who is working, who failed, who is talking to whom |
+| Contains | Markdown only | A small TypeScript module (about 550 lines, with tests) |
+| Required? | Yes, it is the product | No. dev-team works the same without it, and the pane works with any subagents |
+| Install | `/plugin install dev-team@dev-team` | `/plugin install dev-team-view@dev-team` |
+| Needs | Claude Code | Claude Code 2.1.287+ (desktop 2.1.286+) |
+| Trust | Reads and writes files, runs commands, only inside the tool limits each agent lists | Mods run inside Claude Code with your permissions, unsandboxed. It makes no network calls and touches no files. Read the source first |
+| Read more | [Plugin reference](plugins/dev-team/README.md) | [Mod README](mods/dev-team-view/README.md) |
 
-Without them the agents still work; they just lose that guidance.
+The mod is early: its tests and validation pass, but it hasn't yet been watched live with a real build.
 
-## Works with other plugins
+![Team pane: a manager desk above six agent desks with status badges](mods/dev-team-view/docs/team-wide.png)
 
-- **superpowers** (obra/superpowers): `/dev-team:build` replaces its brainstorming and planning for that run — don't run both on the same feature. Builders may still use its `systematic-debugging` and `verification-before-completion`.
-- **Anthropic's code-review / pr-review-toolkit**: fine as an extra review on the branch before you open a PR.
+*A render of the mod's own drawing code with sample data, not a screenshot of a live build.*
 
-## How it compares
+## Go deeper
 
-Checked 2026-11-09 by reading each project's files. Stars change; strengths don't much.
+| Read | For |
+|---|---|
+| [Plugin reference](plugins/dev-team/README.md) | Every agent and model, the full rules, what is enforced and what isn't, the profile options, FAQ, how it compares with superpowers, BMAD and gstack |
+| [Mod README](mods/dev-team-view/README.md) | What the Team pane shows, what it reads, how to install and turn it off |
+| [Benchmark](benchmark/README.md) | The team against a plain session and feature-dev: what it matched, what it cost, what its review caught |
+| [Demo run](examples/demo-run/) | A real build end to end: brief, design spec, diff, log, screenshots |
+| [Example project files](examples/) | What dev-team writes into your repo (`company/`, `design/`) |
+| [CHANGELOG](CHANGELOG.md) | Every release, with what was measured and how large the sample was |
+| [CONTRIBUTING](CONTRIBUTING.md) | How to change an agent or the mod |
 
-| | dev-team | [superpowers](https://github.com/obra/superpowers) | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | [gstack](https://github.com/garrytan/gstack) | [feature-dev](https://github.com/anthropics/claude-plugins-official) |
-|---|---|---|---|---|---|
-| Product brief + owner approval | yes | design doc | PRD | yes | clarifying questions |
-| UI design spec + critique of built UI | **yes** | — | UX role | design review | — |
-| Marketing / pricing roles | **yes** | — | analyst | — | — |
-| Resume after interruption | yes (brief state) | yes (progress log) | yes | yes | — |
-| Test-first rule | bug fixes only | always (strict) | yes | bug fixes | — |
-| Hard enforcement (hooks) | none | session-start hook | none | several | none |
-| Deploy / release automation | no (by design) | finish branch | no | yes | no |
-| Footprint | 12 agent/skill files, all markdown | large | very large, installer | very large, installer | small |
-| Network / telemetry | web search by research agents only | version-reporting logo (can be turned off) | update checks | opt-in telemetry | none |
+## Repo layout
 
-Pick dev-team if you're a solo builder or a small team who wants the whole product loop — brief, design, code, QA, review, pricing, copy — in a small plugin you can read end to end. Pick superpowers or gstack if you want stricter, hook-enforced engineering discipline and are fine with a bigger footprint.
-
-## FAQ
-
-### What is dev-team?
-dev-team is a free, MIT-licensed Claude Code plugin that gives Claude a small product team: nine subagents with separate roles and tool limits, plus `/dev-team:build`, which takes an idea through an approved brief, design, build, QA and code review to a local git commit.
-
-### How do I install a Claude Code plugin from GitHub?
-In Claude Code, run `/plugin marketplace add mategog/dev-team`, then `/plugin install dev-team@dev-team`, and start a new session. The same two commands work for any plugin repo that ships a `.claude-plugin/marketplace.json`.
-
-### Does dev-team push code, open PRs or deploy?
-No. It works on a local `dev-team/<feature>` branch (or a worktree, if your repo has uncommitted work) and makes one local commit per reviewed slice. Pushing, merging, tagging, publishing and deploying are always left to you.
-
-### Is it for solo developers or teams?
-It's designed for solo builders and small teams who don't have a designer, QA engineer, product manager or pricing person — the agents fill those roles. Larger teams can use individual agents, such as `dev-team:review` or `dev-team:qa`, inside their own process.
-
-### How much does it cost to run?
-The plugin is free. Runs use your own Claude plan or API usage. Every agent defaults to Sonnet except the manager, which is your own session; mechanical helper tasks, per-slice reviews (two in parallel for a one-slice brief that isn't risky; a Sonnet review of the whole diff follows a multi-slice brief) and QA on briefs with no screen run on Haiku, and the manager can name a stronger model for a hard task. Briefs that touch security, money or user data also get a final review on the strongest model you have (about $0.50–0.70 on Opus, against about $0.20 on Sonnet), next to the Sonnet one. You can change `model:` in any agent file.
-
-### How do I tune it to my project?
-Add optional sections to `company/profile.md` (`/dev-team:setup` asks for them):
-- `## Gates`: `Owner reviews each slice: yes`, `risky only` or `no`.
-- `## Models`: one line per role, e.g. `builders: opus`, `slice reviews: sonnet`, `qa: haiku`, `final review: opus`. Unlisted roles keep the defaults. This survives plugin updates, unlike editing the agent files.
-- `## Budget`: `stop above $5 per brief`. The manager keeps a running estimate from each agent's token count (blended rates measured on one machine, not list prices; Opus rests on two runs and Fable is a guess; in tests the Sonnet and Haiku total came out from about right to about twice too high, so it errs toward stopping early) and stops to ask before the next agent once it's over. The final report ends with a cost line, labelled an estimate.
-- `company/preferences.md`: up to 20 lines of ways you want things done. The manager reads it first, and offers to add a line when you correct the same thing twice (it writes only after you say yes).
-- Each brief carries `risk: low | normal | high`, set by the product agent. `high` briefs get the strongest-model final review and a stop after each slice if your gate says `risky only`.
-
-### Does it work with superpowers or other Claude Code plugins?
-Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that feature, so don't run both on the same feature; builders can still use its debugging and verification skills. Anthropic's code-review plugins work as an extra review on the branch.
-
-### Do I need the recommended skills?
-No. Without them the agents still work; they lose the extra guidance those skills add (for example ponytail's "smallest change" rules or the pricing frameworks).
-
-### What happens if a build is interrupted?
-Each brief stores its status, next step, and each repo's branch and starting commit; its plan and log sit beside it. Run `/dev-team:build` again and it offers to resume where it stopped.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Changes to agent behaviour need a line in [CHANGELOG.md](CHANGELOG.md) and a version bump in both `.claude-plugin/*.json` files — without the bump, installed copies don't update.
+```
+.claude-plugin/marketplace.json   lists both parts for /plugin install
+plugins/dev-team/                 the plugin: agents/, skills/, README.md
+mods/dev-team-view/               the mod: hooks/, types/, docs/, README.md
+benchmark/                        the team against a plain session, with limits
+examples/                         a real demo run and sample project files
+```
 
 ## License
 
-[MIT](LICENSE) © [Máté Góg](https://github.com/mategog). Issues and ideas welcome in [GitHub Issues](https://github.com/mategog/dev-team/issues).
+[MIT](LICENSE) © [Máté Góg](https://github.com/mategog). Questions, bugs and ideas are welcome in [GitHub Issues](https://github.com/mategog/dev-team/issues).
