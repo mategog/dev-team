@@ -13,7 +13,7 @@ Every arm got the same repository copy and the same task text. dev-team was give
 ## Results
 | | plain | feature-dev | dev-team 0.9.0 | dev-team candidate |
 |---|---|---|---|---|
-| Medium: hidden checks passed | 160/160 | 160/160 | 160/160 | 80/80 (5 runs) |
+| Medium: hidden checks passed | 160/160 | 160/160 | 160/160 | 80/80 (5 runs, not 10) |
 | Medium: mean cost / time | $0.22 / 40 s | $0.25 / 46 s | $0.75 / 218 s | $0.74 / 322 s (5 runs) |
 | Hard: hidden checks passed | 146/146 | 146/146 | 146/146 | 146/146 |
 | Hard: mean cost / time | $0.54 / 140 s | $0.62 / 137 s | $2.43 / 497 s | $1.91 / 396 s |

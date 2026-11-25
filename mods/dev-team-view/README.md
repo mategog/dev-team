@@ -8,7 +8,7 @@ A live **Team** pane next to your chat in the Claude Code desktop app: a manager
 
 ## Why use it
 
-- **You see who is talking to whom.** The desktop app's Background tasks pane lists which subagents are running, and mods like Claude Flightdeck show per-agent cost and context. This one shows what those don't: the messages between agents, and which agent failed or was stopped, as an office you can read at a glance.
+- **You see who is talking to whom.** The desktop app's Background tasks pane lists which subagents are running, and Claude Flightdeck (checked 2026-11-25) shows per-agent cost, context and recent tool calls. Neither's documentation mentions what this one shows: the messages between agents, and which agent failed or was stopped, as an office you can read at a glance.
 - **It costs nothing in tokens.** It adds nothing to the prompt and registers no tool for the model. It only listens to events Claude Code already emits.
 - **It works with any subagents**, not just dev-team's. Use it with your own agents too.
 - **It stays out of the way.** Type `/team` to open the pane. Close it and a **Team ▸** button appears above the prompt to bring it back.
