@@ -3,7 +3,7 @@
 Thanks for helping. This plugin stays small on purpose, so the bar for adding things is "does a solo builder clearly need this?"
 
 ## Ground rules
-- **Markdown only.** No hooks, scripts, installers, network calls or telemetry in the plugin itself. If an idea needs code, propose it as a separate optional plugin.
+- **Markdown only.** No hooks, scripts, installers, telemetry or code of its own that makes network calls. If an idea needs code, propose it as a separate optional plugin.
 - **Keep agents short.** Every line is paid for in tokens on every run. Prefer one sharp rule over a paragraph.
 - **Say what's enforced.** If you add a rule that Claude Code can't enforce, it's an instruction — the plugin README's "What is enforced" section must stay true.
 - **No invented facts.** Any number or claim about another tool needs a source and a date.
