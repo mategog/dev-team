@@ -1,11 +1,11 @@
 ---
 name: build
-description: Run the dev-team pipeline on an idea — product brief (owner approves) → plan → design (owner approves, if the profile asks) → build → QA → review → design critique → local commit and summary. Resumes an unfinished build if there is one.
+description: Run the outfit pipeline on an idea — product brief (owner approves) → plan → design (owner approves, if the profile asks) → build → QA → review → design critique → local commit and summary. Resumes an unfinished build if there is one.
 argument-hint: "<idea or feature to build>"
 disable-model-invocation: true
 ---
 
-# /dev-team:build
+# /outfit:build
 
 You (the main session) are the company's front desk and its delivery manager. You talk to the owner; the agents do the work. Idea: **$ARGUMENTS**
 
@@ -17,16 +17,16 @@ This command replaces brainstorming and planning workflows from other plugins (e
 Look in `company/briefs/*.md` for any brief whose `status:` is `draft`, `approved`, `building`, `testing` or `waiting-owner`. If there are any, show each (name, status, `next:`) and ask the owner: resume one, or start the new idea? Resume a `draft` at step 3, anything else at step 4. Files with no `status:` frontmatter are notes, not briefs: skip them. A brief whose status isn't one of the statuses in `manager.md` (older free-text statuses): show it and ask the owner which status it is, then write that.
 
 ## 1. Profile
-If `company/profile.md` doesn't exist, tell the owner to run `/dev-team:setup` first and stop — unless they say to go ahead without one.
+If `company/profile.md` doesn't exist, tell the owner to run `/outfit:setup` first and stop — unless they say to go ahead without one.
 
 ## 2. Brief
-Spawn `dev-team:product` with the idea, word for word, the project root, and any context from this conversation. Wait for it.
+Spawn `outfit:product` with the idea, word for word, the project root, and any context from this conversation. Wait for it.
 
 ## 3. Approval gate
 Show the owner the brief's scope, size, risk, non-goals, premise answers, done-checks, owner checks and open questions in a few lines, with the file path. For risk, name the trigger numbers that fired from the six in `product.md` (e.g. `high (3: gift card balance)`), or say that none of the six matched, and ask the owner to confirm the call or name a trigger that applies. Ask them to approve, change, or stop. Do not continue until they approve. If they ask for changes (including the size or risk), send them to the same product agent and repeat. On approval set `status: approved` and `next:`, and log it in `company/briefs/<slug>/log.md` with the risk outcome: `risk confirmed by owner: <risk line>` or `risk changed by owner: <old> → <new>`. If they say stop, set `status: stopped` and log why.
 
 ## 4. Delivery — you are the manager
-Load the `ponytail` skill if it's installed (the manager preloads it). Read `${CLAUDE_PLUGIN_ROOT}/agents/manager.md` and follow it yourself, in this session, from "First" through "Finish". Don't spawn `dev-team:manager` for this: a subagent's run can end before the agents it started report back, which leaves fix rounds unverified. Here you can ask the owner at its gates and wait for every report.
+Load the `ponytail` skill if it's installed (the manager preloads it). Read `${CLAUDE_PLUGIN_ROOT}/agents/manager.md` and follow it yourself, in this session, from "First" through "Finish". Don't spawn `outfit:manager` for this: a subagent's run can end before the agents it started report back, which leaves fix rounds unverified. Here you can ask the owner at its gates and wait for every report.
 
 Delivery runs slice by slice and stops after each slice for the owner's review, unless the profile says otherwise (see `manager.md`, "Slice loop").
 

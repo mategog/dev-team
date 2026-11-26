@@ -1,6 +1,6 @@
-# dev-team-view: see your agent team work
+# outfit-view: see your agent team work
 
-> Part of [dev-team](../../README.md). This is the optional **mod**. The [plugin](../../plugins/dev-team/README.md) is the team itself, and it works the same without this.
+> Part of [outfit](../../README.md). This is the optional **mod**. The [plugin](../../plugins/outfit/README.md) is the team itself, and it works the same without this.
 
 A live **Team** pane next to your chat in the Claude Code desktop app: a manager desk and one desk per subagent. You see who is working (and the last tool they used), who is done, failed or stopped, a line between agents for the latest message, and a feed of the last messages between them. In a terminal, where there is no SVG, you get a plain list of the same.
 
@@ -10,7 +10,7 @@ A live **Team** pane next to your chat in the Claude Code desktop app: a manager
 
 - **You see who is talking to whom.** The desktop app's Background tasks pane lists which subagents are running, and Claude Flightdeck (checked 2026-11-25) shows per-agent cost, context and recent tool calls. Neither's documentation mentions what this one shows: the messages between agents, and which agent failed or was stopped, as an office you can read at a glance.
 - **It costs nothing in tokens.** It adds nothing to the prompt and registers no tool for the model. It only listens to events Claude Code already emits.
-- **It works with any subagents**, not just dev-team's. Use it with your own agents too.
+- **It works with any subagents**, not just outfit's. Use it with your own agents too.
 - **It stays out of the way.** Type `/team` to open the pane. Close it and a **Team ▸** button appears above the prompt to bring it back.
 
 ## Install
@@ -18,11 +18,11 @@ A live **Team** pane next to your chat in the Claude Code desktop app: a manager
 In a terminal session:
 
 ```
-/plugin marketplace add mategog/dev-team
-/plugin install dev-team-view@dev-team
+/plugin marketplace add mategog/outfit
+/plugin install outfit-view@outfit
 ```
 
-In the desktop app, where `/plugin` doesn't run: click + next to the prompt box, then Plugins, add the marketplace `mategog/dev-team` if it isn't there, then Add plugin `dev-team-view`.
+In the desktop app, where `/plugin` doesn't run: click + next to the prompt box, then Plugins, add the marketplace `mategog/outfit` if it isn't there, then Add plugin `outfit-view`.
 
 Needs a Claude Code version that supports mods: 2.1.287 or newer, desktop app 2.1.286 or newer.
 

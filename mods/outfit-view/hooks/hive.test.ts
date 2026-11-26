@@ -22,8 +22,8 @@ test('empty input is a valid svg with the manager alone', async () => {
 
 test('mixed agents show roles, statuses, last tool and escape text', async () => {
   const agents = [
-    agent('a1', 'dev-team:frontend', 'working', { task: "make <b>& it's", lastTool: 'Edit' }),
-    agent('a2', 'dev-team:backend', 'done'),
+    agent('a1', 'outfit:frontend', 'working', { task: "make <b>& it's", lastTool: 'Edit' }),
+    agent('a2', 'outfit:backend', 'done'),
     agent('a3', 'Explore', 'failed', { parentId: 'a1' }),
   ]
   const messages: HiveMessage[] = [{ at: 1, from: 'main', to: 'a1', kind: 'send', text: 'hi "there"' }]
@@ -40,14 +40,14 @@ test('mixed agents show roles, statuses, last tool and escape text', async () =>
 test('30 agents stay under the size limit, even with escape-heavy text', async () => {
   const long = '&<'.repeat(3000)
   const agents = Array.from({ length: 30 }, (_, i) =>
-    agent(`a${i}`, `dev-team:${long}`, (['working', 'done', 'failed', 'stopped'] as const)[i % 4]!, { task: long, lastTool: long }),
+    agent(`a${i}`, `outfit:${long}`, (['working', 'done', 'failed', 'stopped'] as const)[i % 4]!, { task: long, lastTool: long }),
   )
   const svg = hiveSvg(agents, [{ at: 1, from: 'a3', to: 'a7', kind: 'send', text: long }], 360).source
   expect(svg.length).toBeLessThan(131072)
 })
 
 test('a message to an unknown name does not throw or highlight', async () => {
-  const svg = hiveSvg([agent('a1', 'dev-team:qa', 'working')], [{ at: 1, from: 'main', to: 'nobody', kind: 'send', text: 'x' }], 360).source
+  const svg = hiveSvg([agent('a1', 'outfit:qa', 'working')], [{ at: 1, from: 'main', to: 'nobody', kind: 'send', text: 'x' }], 360).source
   expect(svg).toContain('>qa<')
   expect(svg).not.toContain('stroke-linejoin="round"')
 })
@@ -55,7 +55,7 @@ test('a message to an unknown name does not throw or highlight', async () => {
 // Px per design unit is the same for 1, 6 and 30 agents while they fit, and the viewBox has the frame's aspect.
 test('the scale is fixed and the frame matches the content', async () => {
   const unit = (n: number, px: number) => {
-    const agents = Array.from({ length: n }, (_, i) => agent(`a${i}`, 'dev-team:qa', 'working'))
+    const agents = Array.from({ length: n }, (_, i) => agent(`a${i}`, 'outfit:qa', 'working'))
     const { source, height } = hiveSvg(agents, [], px)
     const [w, h] = source.match(/viewBox="0 0 ([\d.]+) (\d+)"/)!.slice(1).map(Number)
     expect(Math.abs(px / w! - height / h!)).toBeLessThan(0.02)

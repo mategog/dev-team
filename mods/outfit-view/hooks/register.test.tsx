@@ -1,9 +1,9 @@
 import { expect, test } from 'claude-code/testing'
 
 const PANE = {
-  plugin: 'dev-team-view',
+  plugin: 'outfit-view',
   component: 'Pane',
-  requestId: 'dev-team-view',
+  requestId: 'outfit-view',
   props: {
     title: 'Team',
     isFocused: false,
@@ -25,8 +25,8 @@ test('a spawned agent, its tool, its report and a message reach the pane', async
     tool_use_id: 't1',
     prompt: 'Build the export button',
     description: 'Build export',
-    subagentType: 'dev-team:frontend',
-    provider: { plugin: 'dev-team', tier: 'user' },
+    subagentType: 'outfit:frontend',
+    provider: { plugin: 'outfit', tier: 'user' },
     parentModel: 'opus',
     background: true,
     fork: false,
@@ -43,8 +43,8 @@ test('a spawned agent, its tool, its report and a message reach the pane', async
   await $.session.send({ to: 'a1', text: 'use the design tokens', origin: { kind: 'model' } })
   await $.agent.report({
     agentId: 'a1',
-    subagentType: 'dev-team:frontend',
-    provider: { plugin: 'dev-team', tier: 'user' },
+    subagentType: 'outfit:frontend',
+    provider: { plugin: 'outfit', tier: 'user' },
     status: 'completed',
     text: 'Export button done',
   })
@@ -67,7 +67,7 @@ test('an empty session draws placeholders', async ($) => {
 })
 
 const BAND = {
-  plugin: 'dev-team-view',
+  plugin: 'outfit-view',
   component: 'AbovePrompt',
   surface: 'desktop',
   props: {

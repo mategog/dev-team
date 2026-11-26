@@ -1,5 +1,7 @@
 # Benchmark: does the team beat a single session?
 
+> outfit was called dev-team when this ran; the arms below keep the old name.
+
 Run 2026-11-25 with headless `claude -p`, Claude Sonnet 5.5 as the session model, on a small Node library (shopkit: catalog, cart, discounts, orders, reports, CLI; integer cents; no dependencies). Plugins were loaded one at a time from a folder; `--setting-sources project` kept the user's own settings out. All numbers are list-price cost from the harness, per run.
 
 ## Arms
