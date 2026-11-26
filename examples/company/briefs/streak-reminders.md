@@ -4,7 +4,7 @@ size: normal
 next: qa and review of T2, then design critique
 repos:
   - path: .
-    branch: dev-team/streak-reminders
+    branch: outfit/streak-reminders
     baseline: 4f2a9c1
 ---
 # Streak reminders

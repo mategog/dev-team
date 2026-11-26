@@ -1,10 +1,10 @@
 ---
 name: setup
-description: Set up the dev-team for this project — interview the owner and write company/profile.md, which every dev-team agent reads first.
+description: Set up the outfit for this project — interview the owner and write company/profile.md, which every outfit agent reads first.
 disable-model-invocation: true
 ---
 
-# /dev-team:setup
+# /outfit:setup
 
 0. Work only in the current project's root (the folder this command was run in). Never edit a parent project's `company/`.
 1. If `company/profile.md` exists, show it and ask what to change instead of starting over; never drop existing sections.
@@ -54,7 +54,7 @@ Skill name to load (e.g. `my-app-design`) or tokens file path. Fonts, colours, c
 -->
 
 ## Teams in use
-Notes on which dev-team agents this project uses. Only a line starting `Only:` with team names restricts the pipeline (product, manager, qa, review always run).
+Notes on which outfit agents this project uses. Only a line starting `Only:` with team names restricts the pipeline (product, manager, qa, review always run).
 ```
 
 Engineer profile (step 3b): no `## Brand`, no `## Values and hard rules` (repo rules go in `## Codebase`), a short `## Product` ("what this code is"), `## Design system` only if there is a UI, and `Only: product, manager, designer, frontend, backend, qa, review` under `## Teams in use`, dropping `designer` only when the repo clearly has no UI (keep it when unsure, e.g. an empty repo).

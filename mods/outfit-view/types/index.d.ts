@@ -1,7 +1,7 @@
-// One subagent the session started (dev-team or any other type).
+// One subagent the session started (outfit or any other type).
 export type HiveAgent = {
   id: string
-  // Agent type as spawned, e.g. 'dev-team:frontend', 'Explore'.
+  // Agent type as spawned, e.g. 'outfit:frontend', 'Explore'.
   type: string
   // The Agent call's short description of the task.
   task: string
@@ -25,7 +25,7 @@ export type HiveMessage = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'dev-team-view': {
+    'outfit-view': {
       agents: Shaped<HiveAgent[]>
       messages: Shaped<HiveMessage[]>
       isOpen: boolean

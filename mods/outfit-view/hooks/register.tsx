@@ -4,13 +4,13 @@ import type { EngineInterface, Register } from 'claude-code'
 import type { HiveAgent, HiveMessage } from '../types'
 import { hiveSvg } from './hive'
 
-const PANE = 'dev-team-view'
+const PANE = 'outfit-view'
 const TITLE = 'Team'
 // Change a tag when its item's fields change: an earlier version's value outlives a reload.
-const agents = atom({ plugin: 'dev-team-view', key: 'agents' } as const, [], { shape: 'agents-1' })
-const messages = atom({ plugin: 'dev-team-view', key: 'messages' } as const, [], { shape: 'messages-1' })
+const agents = atom({ plugin: 'outfit-view', key: 'agents' } as const, [], { shape: 'agents-1' })
+const messages = atom({ plugin: 'outfit-view', key: 'messages' } as const, [], { shape: 'messages-1' })
 // Whether the pane is open: false after the person closes it, so the band below offers a way back.
-const isOpen = atom({ plugin: 'dev-team-view', key: 'isOpen' } as const, true)
+const isOpen = atom({ plugin: 'outfit-view', key: 'isOpen' } as const, true)
 
 const clip = (s: string, n: number) => {
   const one = s.replace(/\s+/g, ' ').trim()
@@ -29,7 +29,7 @@ const open = async ($: EngineInterface) => {
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
-    await $.command.register({ name: 'team', description: 'Show the dev team: who works on what, and their messages' })
+    await $.command.register({ name: 'team', description: 'Show the agent team: who works on what, and their messages' })
     void open($)
     return next(e)
   })

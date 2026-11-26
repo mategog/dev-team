@@ -1,5 +1,7 @@
 # Demo run: "show each habit's streak" in Tally
 
+(outfit was called dev-team when this ran; the files below keep the old name.)
+
 The first real end-to-end `/dev-team:build`, run on 2026-11-09 with dev-team 0.4.0 on a tiny habit-tracker app (plain HTML/JS, Node's test runner). Nothing here was edited after the run except removing local folder paths.
 
 | File | What it is |

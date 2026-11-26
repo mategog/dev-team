@@ -1,19 +1,19 @@
 {
-  "name": "dev-team",
+  "name": "outfit",
   "owner": {
     "name": "M\u00e1t\u00e9 G\u00f3g"
   },
   "plugins": [
     {
-      "name": "dev-team",
-      "source": "./plugins/dev-team",
+      "name": "outfit",
+      "source": "./plugins/outfit",
       "description": "A small AI product company in one plugin: product owner, manager, designer, frontend, backend, QA, review, marketing and finance agents.",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
-      "name": "dev-team-view",
-      "source": "./mods/dev-team-view",
-      "description": "Optional companion mod: a live pane showing which dev-team agents are working, on what, and the messages between them.",
+      "name": "outfit-view",
+      "source": "./mods/outfit-view",
+      "description": "Optional companion mod: a live pane showing which outfit agents are working, on what, and the messages between them.",
       "version": "0.1.2"
     }
   ]

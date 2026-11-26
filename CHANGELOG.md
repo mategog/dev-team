@@ -1,12 +1,15 @@
 # Changelog
 
-All notable changes. Versions follow semver; bump both `plugins/dev-team/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
+All notable changes. Versions follow semver; bump both `plugins/outfit/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
+
+## 0.13.0 — 2026-11-26
+- **Renamed from dev-team to outfit.** "dev-team" sounded like engineers only; the plugin also covers product, design, marketing and finance. Commands are now `/outfit:setup`, `/outfit:build` and `/outfit:status`, agents are `outfit:product` … `outfit:finance`, the plugin installs as `outfit@outfit`, the mod is `outfit-view`, and build branches are `outfit/<feature>`. Nothing else changed. To move over: `/plugin uninstall dev-team@dev-team`, then `/plugin marketplace add mategog/outfit` and `/plugin install outfit@outfit`, and start a new session. Briefs, `company/profile.md` and existing `dev-team/<feature>` branches keep working: briefs store their own branch name. Entries below use the old name, including `/dev-team:review-pr`, which is now `/outfit:review-pr`.
 
 ## 0.12.0 — 2026-11-26
 - **`/dev-team:review-pr`.** The team's review applied to someone else's PR or branch: it reads the PR in a detached worktree (read-only until you say yes to running its code), maps the PR's promises to the diff, runs the strongest-model plus default review on the six risk triggers, and reports a verdict, graded findings and a review text for you to paste. Report only: it never posts, edits or merges, never touches your checkout, reads your profile from your repo rather than the PR, and asks before running the author's code. Not yet run on a real PR.
 
 ## 0.11.0 — 2026-11-26
-- **Engineer mode.** `/dev-team:setup` asks new profiles whether you own the product or are an engineer on an existing codebase; the engineer path skips brand, audience and values and scans the repo into `## Codebase` (commit style without author names). It writes `Only: product, manager, designer, frontend, backend, qa, review` under `## Teams in use` (no designer when there is no UI); product and manager skip off-list teams, and only an `Only:` line restricts, so existing profiles are unchanged. Not yet run on a real build.
+- **Engineer mode.** `/outfit:setup` asks new profiles whether you own the product or are an engineer on an existing codebase; the engineer path skips brand, audience and values and scans the repo into `## Codebase` (commit style without author names). It writes `Only: product, manager, designer, frontend, backend, qa, review` under `## Teams in use` (no designer when there is no UI); product and manager skip off-list teams, and only an `Only:` line restricts, so existing profiles are unchanged. Not yet run on a real build.
 
 ## 0.10.1 — 2026-11-25
 - **You confirm the risk call at the brief gate.** The gate shows which of the six risk triggers fired (or that none did) and asks you to confirm it or name one that applies; the log records `risk confirmed by owner` or `risk changed by owner: old → new`. Why: no real brief so far had an owner-checked risk label, so there was no way to tell how often Claude's call is wrong. Not yet run on a real build.
@@ -18,10 +21,10 @@ Measured against a plain session, and the findings acted on.
 - **Reviewers always get the brief,** and mark each done-check and breakage case as met or missing. With the brief 3 of 3 slice reviews caught a requirement we had removed; with only a one-line goal, 1 of 3.
 - **Clean-code rules are in the builders and the reviewer** instead of depending on the optional ponytail skill: blind-judged quality rose from 3.7 to 4.1 on the medium features but was 0.2 lower (3.5 against 3.7) on the large ones (5 to 10 runs medium, 4 per arm hard; the large-task difference is 0.2), so treat it as unproven.
 - **Budget estimate:** rates refitted on 94 runs (Sonnet $6, Haiku $0.40, Opus $9 per million reported tokens); no formula from a token count does better, so figures for one agent can be off by half, and the text says so.
-- **dev-team-view** README now says plainly what it adds over the Desktop tasks pane and Claude Flightdeck: the message line between agents and the failed and stopped states. It still hasn't been watched live on a real build.
+- **outfit-view** README now says plainly what it adds over the Desktop tasks pane and Claude Flightdeck: the message line between agents and the failed and stopped states. It still hasn't been watched live on a real build.
 - Tested and not shipped: an automatic "direct path" for small specified work. Six of six trials went direct and passed, but a money-related brief did too, and the corrected version was not retested.
 ### Repo layout
-- The plugin now lives in `plugins/dev-team/` and the mod in `mods/dev-team-view/`, side by side; the marketplace file stays at the root and points at both. The root README is a short introduction to both, with the detail in each folder's README. The move itself changed no agent or skill text.
+- The plugin now lives in `plugins/outfit/` and the mod in `mods/outfit-view/`, side by side; the marketplace file stays at the root and points at both. The root README is a short introduction to both, with the detail in each folder's README. The move itself changed no agent or skill text.
 
 ## 0.9.0 — 2026-11-25
 Tune the team from the profile. Each item was checked with the maintainer's headless runs before shipping; the run logs are not in this repo, and every sample is small.
@@ -29,7 +32,7 @@ Tune the team from the profile. Each item was checked with the maintainer's head
 - **`## Budget`**: `stop above $5 per brief`. The manager keeps a running estimate from agent token counts and stops to ask before the next agent once it's over. It stopped as asked in the one run that set a limit. The estimate uses blended per-token rates measured on one machine, not list prices (Sonnet and Haiku measured, Opus from two runs, Fable a guess): right within 2% on an 11-agent build and six QA runs, but about twice too high on a small two-agent run, so it errs toward stopping early.
 - **Cost line** at the end of the manager's report: each agent run with model and tokens, and the estimated total, labelled an estimate.
 - **`risk: low | normal | high` in each brief**, set by the product agent. On six ideas of known risk it matched five (a CSV export of the user's own tasks was rated high, with a stated reason) and rated no high-risk idea low. The manager can raise a brief's risk, never lower it. In the gift-cards test two runs judged the same brief differently (one raised it to high), so the call is not stable.
-- **`Owner reviews each slice: risky only`** as a gate (`/dev-team:setup` now asks when to stop for you). One run judged the brief risky and stopped after slice 1; the other judged it not risky and went on. A brief with no `risk:` field falls back to the topic test (security, money, user data); that case was not run.
+- **`Owner reviews each slice: risky only`** as a gate (`/outfit:setup` now asks when to stop for you). One run judged the brief risky and stopped after slice 1; the other judged it not risky and went on. A brief with no `risk:` field falls back to the topic test (security, money, user data); that case was not run.
 - **`company/preferences.md`**: ways you want things done, read first by the manager. Both runs followed a test preference. The manager offers to add a line after you correct the same thing twice and writes only after your yes; that path was not exercised, and whether it helps is unproven.
 
 ## 0.8.0 — 2026-11-25
@@ -71,9 +74,9 @@ Cuts tokens, from measuring 149 real agent runs and testing each change.
 
 ## 0.7.0 — 2026-11-24
 The optional team view mod, plus the slice flow and token savings from 0.6.x, in one release.
-- Optional companion mod `dev-team-view` in `mods/dev-team-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.
-- `dev-team-view` 0.1.1: after you close the Team pane, a **Team ▸** button above the prompt reopens it, and `/team` says so when the pane can't be shown instead of always claiming it opened.
-- `dev-team-view` 0.1.2: the drawing was stuck in Desktop's default 150px-tall frame, so it came out tiny. It now sets the frame to the pane's width and the content's height, at a fixed size (1.5 px per drawing unit) so cards and text are readable on any monitor: wider panes fit more cards per row, narrower ones stack them.
+- Optional companion mod `outfit-view` in `mods/outfit-view`, listed in the marketplace: a live Team pane showing which agents are working and the messages between them. The plugin itself is unchanged.
+- `outfit-view` 0.1.1: after you close the Team pane, a **Team ▸** button above the prompt reopens it, and `/team` says so when the pane can't be shown instead of always claiming it opened.
+- `outfit-view` 0.1.2: the drawing was stuck in Desktop's default 150px-tall frame, so it came out tiny. It now sets the frame to the pane's width and the content's height, at a fixed size (1.5 px per drawing unit) so cards and text are readable on any monitor: wider panes fit more cards per row, narrower ones stack them.
 
 ## 0.6.1 — 2026-11-24
 Cuts tokens.
@@ -84,18 +87,18 @@ Cuts tokens.
 ## 0.6.0 — 2026-11-24
 Review-sized builds: no more one huge diff at the end.
 - The manager plans **slices**: one user-visible behaviour each, at most about 500 changed lines (tests, lockfiles and generated files not counted), each with a done-check the owner can run in a minute. Oversized slices are split before building.
-- Each slice is reviewed, committed on its own (`slice N/M: …`) and followed by a slice report with a **review map** from `dev-team:review` (where the logic is, what the tests prove, what to skip). The build then waits for the owner. Turn the pause off with `Owner reviews each slice: no` under `## Gates`. `small` briefs are one slice and don't pause.
+- Each slice is reviewed, committed on its own (`slice N/M: …`) and followed by a slice report with a **review map** from `outfit:review` (where the logic is, what the tests prove, what to skip). The build then waits for the owner. Turn the pause off with `Owner reviews each slice: no` under `## Gates`. `small` briefs are one slice and don't pause.
 - Review also runs once over the whole diff after the last slice.
 
 ## 0.5.1 — 2026-11-13
-- `/dev-team:build` and `/dev-team:status` skip files in `company/briefs/` with no `status:` frontmatter (notes such as contracts or research), instead of flagging them as unknown briefs.
+- `/outfit:build` and `/outfit:status` skip files in `company/briefs/` with no `status:` frontmatter (notes such as contracts or research), instead of flagging them as unknown briefs.
 
 ## 0.5.0 — 2026-11-13
 Fixes from real multi-repo builds.
-- `/dev-team:build` runs the manager's playbook in the main session instead of spawning the manager: a subagent's run could end before its builders reported back, leaving fix rounds unverified. `dev-team:manager` stays for direct multi-team tasks and now waits for every report, or logs what's still running.
+- `/outfit:build` runs the manager's playbook in the main session instead of spawning the manager: a subagent's run could end before its builders reported back, leaving fix rounds unverified. `outfit:manager` stays for direct multi-team tasks and now waits for every report, or logs what's still running.
 - Owner design gate after the designer's spec, on by default; turn it off under `## Gates` in `company/profile.md`.
 - Fixed brief statuses (`draft`, `approved`, `building`, `testing`, `waiting-owner`, `done`, `parked`, `stopped`, `superseded`) plus a one-line `next:`. Resume offers only unfinished briefs; unknown statuses are flagged.
-- Briefs list **Owner checks** (real device, real accounts, payments) separately from agent done-checks; `/dev-team:status` and the summary show the open ones.
+- Briefs list **Owner checks** (real device, real accounts, payments) separately from agent done-checks; `/outfit:status` and the summary show the open ones.
 - `size: small` briefs skip the plan and the designer: one builder, review, and QA when users see the change.
 - Plan and log move to `company/briefs/<slug>/plan.md` and `log.md`, one short line per step; older briefs keep their inline sections.
 - `repos:` in the brief records path, branch and baseline per repo; a dirty or busy repo gets a git worktree beside it. Review diffs each repo. Agents use the project root they're given before the git root.
@@ -112,8 +115,8 @@ Fixes found by the first real end-to-end run (Tally demo, see `examples/demo-run
 
 ## 0.4.0 — 2026-11-09
 First public release.
-- Briefs carry state (`status`, `baseline`, `branch`, Plan, Progress log) so an interrupted `/dev-team:build` resumes; the Approved scope is frozen after approval.
-- Git discipline: dirty-tree check, local `dev-team/<feature>` branch, baseline commit, builder ban on `checkout --` / `restore` / `reset --hard` / `clean` / `stash`, one local commit by the manager, never push.
+- Briefs carry state (`status`, `baseline`, `branch`, Plan, Progress log) so an interrupted `/outfit:build` resumes; the Approved scope is frozen after approval.
+- Git discipline: dirty-tree check, local `outfit/<feature>` branch, baseline commit, builder ban on `checkout --` / `restore` / `reset --hard` / `clean` / `stash`, one local commit by the manager, never push.
 - Fix loop capped at 3 rounds, then hand back to the owner. Manager grades findings itself.
 - Review: diff since baseline, gate-integrity checks (cheated tests, placeholders, spec edited to match), confidence ≥ 80 only, explicit "security review skipped" note.
 - Bug fixes start with a failing test; zero-test runs aren't passes; every report states its evidence type.
@@ -128,4 +131,4 @@ First public release.
 - New `finance` agent: pricing, fee comparisons, break-even and scenario spreadsheets, tagged numbers, tax questions routed to an advisor.
 
 ## 0.1.0 — 2026-11-08
-- Eight agents (product, manager, designer, frontend, backend, qa, review, marketing) and `/dev-team:build`, `:status`, `:setup`.
+- Eight agents (product, manager, designer, frontend, backend, qa, review, marketing) and `/outfit:build`, `:status`, `:setup`.
