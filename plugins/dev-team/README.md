@@ -82,6 +82,8 @@ A separate mod, [`dev-team-view`](../../mods/dev-team-view/README.md), adds a li
 | `/dev-team:build <idea>` | The whole pipeline above. Resumes an unfinished build if there is one. |
 | `/dev-team:status` | What's in progress, done, stopped, and waiting on you. |
 
+**Engineer mode.** `/dev-team:setup` first asks whether you own the product or work on an existing codebase. Engineers skip the brand, audience and values questions: setup scans the repo and writes a `## Codebase` section (layout, how to run and test, conventions, commit style, fragile areas) and an `Only:` line under `## Teams in use` naming product, manager, designer (only when there is a UI), frontend, backend, qa and review. Only an `Only:` line restricts: product and manager skip off-list teams, while a direct call ("use dev-team:finance ...") is not blocked. Existing profiles are unchanged.
+
 You can also call any agent directly, e.g. "use dev-team:finance to compare Paddle and Stripe at €29".
 
 ## What it keeps in your repo
@@ -195,6 +197,7 @@ The plugin is free. Runs use your own Claude plan or API usage. Every agent defa
 ### How do I tune it to my project?
 Add optional sections to `company/profile.md` (`/dev-team:setup` asks for them):
 - `## Gates`: `Owner reviews each slice: yes`, `risky only` or `no`.
+- `## Teams in use`: `Only: product, manager, backend, qa, review` limits the pipeline to those teams; anything else means all.
 - `## Models`: one line per role, e.g. `builders: opus`, `slice reviews: sonnet`, `qa: haiku`, `final review: opus`. Unlisted roles keep the defaults. This survives plugin updates, unlike editing the agent files.
 - `## Budget`: `stop above $5 per brief`. The manager keeps a running estimate from each agent's token count (blended rates fitted on 94 runs on one machine, not list prices; a single agent's figure can be off by half and a build's total by about a quarter, and short runs come out up to twice too high, so it errs toward stopping early) and stops to ask before the next agent once it's over. The final report ends with a cost line, labelled an estimate.
 - `company/preferences.md`: up to 20 lines of ways you want things done. The manager reads it first, and offers to add a line when you correct the same thing twice (it writes only after you say yes).
