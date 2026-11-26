@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `plugins/dev-team/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.11.0 — 2026-11-26
+- **Engineer mode.** `/dev-team:setup` asks new profiles whether you own the product or are an engineer on an existing codebase; the engineer path skips brand, audience and values and scans the repo into `## Codebase` (commit style without author names). It writes `Only: product, manager, designer, frontend, backend, qa, review` under `## Teams in use` (no designer when there is no UI); product and manager skip off-list teams, and only an `Only:` line restricts, so existing profiles are unchanged. Not yet run on a real build.
+
 ## 0.10.1 — 2026-11-25
 - **You confirm the risk call at the brief gate.** The gate shows which of the six risk triggers fired (or that none did) and asks you to confirm it or name one that applies; the log records `risk confirmed by owner` or `risk changed by owner: old → new`. Why: no real brief so far had an owner-checked risk label, so there was no way to tell how often Claude's call is wrong. Not yet run on a real build.
 
