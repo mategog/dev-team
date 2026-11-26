@@ -1,3 +1,11 @@
+// The agent's last test run: what its tests actually did, next to what it reports.
+export type HiveTests = {
+  // 'stale': the agent edited or wrote a file after that run.
+  state: 'pass' | 'fail' | 'stale'
+  passed?: number
+  failed?: number
+}
+
 // One subagent the session started (outfit or any other type).
 export type HiveAgent = {
   id: string
@@ -10,6 +18,7 @@ export type HiveAgent = {
   status: 'working' | 'done' | 'failed' | 'stopped'
   // Last tool the agent called while working, e.g. 'Edit'.
   lastTool?: string
+  tests?: HiveTests
   startedAt: number
   endedAt?: number
 }
@@ -29,6 +38,8 @@ declare module 'claude-code' {
       agents: Shaped<HiveAgent[]>
       messages: Shaped<HiveMessage[]>
       isOpen: boolean
+      // Session cost in USD when the first agent started; null when the host keeps no cost.
+      costFrom: number | null
     }
   }
 }

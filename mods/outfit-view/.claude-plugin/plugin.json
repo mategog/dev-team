@@ -1,6 +1,6 @@
 {
   "name": "outfit-view",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Live team pane: which subagents are working, on what, and the messages between them",
   "types": "./types/index.d.ts"
 }

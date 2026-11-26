@@ -8,15 +8,19 @@
 
 **outfit is an open-source Claude Code plugin that adds nine specialized subagents — product owner, manager, designer, frontend, backend, QA, code review, marketing and finance — and runs them as one end-to-end workflow:** a one-page brief you approve, then design, build, QA, code review and a local git commit. It's built for solo developers and small teams who want the whole product loop, not just coding.
 
-Markdown only. No hooks, no scripts, no telemetry, and no code of its own that makes network calls (the product, marketing and finance agents use web search for research; `/outfit:review-pr` reads GitHub through your own `gh` and `git`). 9 agents + 4 commands, about 900 tokens added to each session. The optional team view is a separate [mod](../../mods/outfit-view/README.md), not part of the plugin.
+Markdown only. No hooks, no scripts, no telemetry, and no code of its own that makes network calls (the product, marketing and finance agents use web search for research; `/outfit:review-pr` reads GitHub through your own `gh` and `git`). 9 agents + 6 commands, about 900 tokens added to each session. The optional team view is a separate [mod](../../mods/outfit-view/README.md), not part of the plugin.
 
 ## Quick start
 
 1. Add the marketplace and install the plugin in Claude Code:
    ```
    /plugin marketplace add mategog/outfit
+   ```
+   then, as a separate prompt:
+   ```
    /plugin install outfit@outfit
    ```
+   Only install outfit from `mategog/outfit` on GitHub.
 2. Start a new Claude Code session.
 3. In your project, run `/outfit:setup` once — it writes `company/profile.md`, which every agent reads.
 4. Run `/outfit:build <your idea>`, approve the brief, and let the team work. `/outfit:status` shows progress.
@@ -82,8 +86,10 @@ A separate mod, [`outfit-view`](../../mods/outfit-view/README.md), adds a live *
 | `/outfit:build <idea>` | The whole pipeline above. Resumes an unfinished build if there is one. |
 | `/outfit:status` | What's in progress, done, stopped, and waiting on you. |
 | `/outfit:review-pr <PR number, URL or branch>` | Reviews someone else's PR in a separate worktree and reports: verdict, graded findings, promises met or missing, a review text to paste. Never posts or edits. |
+| `/outfit:audit [folder]` | Reviews the whole repo (or one folder) and ranks what it finds: bugs, security, what breaks at your expected load, risky code without tests, code to cut. Numbered, so you can say "fix 2 and 5" and get briefs. Changes nothing. |
+| `/outfit:help` | One-screen reference: commands, profile options, brief statuses. |
 
-**Engineer mode.** `/outfit:setup` first asks whether you own the product or work on an existing codebase. Engineers skip the brand, audience and values questions: setup scans the repo and writes a `## Codebase` section (layout, how to run and test, conventions, commit style, fragile areas) and an `Only:` line under `## Teams in use` naming product, manager, designer (only when there is a UI), frontend, backend, qa and review. Only an `Only:` line restricts: product and manager skip off-list teams, while a direct call ("use outfit:finance ...") is not blocked. Existing profiles are unchanged.
+**Engineer mode.** `/outfit:setup` first asks whether you own the product or work on an existing codebase. Engineers skip the brand, audience and values questions: setup scans the repo and writes a `## Codebase` section (layout, how to run and test, conventions, commit style, fragile areas, expected load, and a `Shared code to reuse:` list builders check before writing anything new) and an `Only:` line under `## Teams in use` naming product, manager, designer (only when there is a UI), frontend, backend, qa and review. Only an `Only:` line restricts: product and manager skip off-list teams, while a direct call ("use outfit:finance ...") is not blocked. Existing profiles are unchanged.
 
 You can also call any agent directly, e.g. "use outfit:finance to compare Paddle and Stripe at €29".
 
@@ -117,6 +123,8 @@ Brief statuses: `draft` → `approved` → `building` → `testing` → `done`, 
 - **Bug fixes start with a failing test.** A check that couldn't have failed proves nothing.
 - **Fix loops stop after 3 rounds** and hand the open findings to you.
 - **Every claim says what it rests on:** ran it / read it / not verified.
+- **Findings you can act on.** Review findings are numbered and written in plain English (what this is, the problem, the fix, what happens if we skip it), so you can answer "fix 2 and 5".
+- **Shortcuts are marked, not hidden.** A deliberate shortcut gets a `shortcut: <the limit>, <when to upgrade>` comment; review treats it as a decision unless your expected load crosses it, and `/outfit:status` counts them.
 - **No invented numbers** in marketing or finance: every figure is verified (source + date), an estimate, or a labelled assumption.
 
 ## What is enforced, and what isn't
@@ -173,7 +181,7 @@ Checked 2026-11-09 by reading each project's files. Stars change; strengths don'
 | Test-first rule | bug fixes only | always (strict) | yes | bug fixes | — |
 | Hard enforcement (hooks) | none | session-start hook | none | several | none |
 | Deploy / release automation | no (by design) | finish branch | no | yes | no |
-| Footprint | 13 agent/skill files, all markdown | large | very large, installer | very large, installer | small |
+| Footprint | 15 agent/skill files, all markdown | large | very large, installer | very large, installer | small |
 | Network / telemetry | web search by research agents; `review-pr` uses your own `gh` and `git` | version-reporting logo (can be turned off) | update checks | opt-in telemetry | none |
 
 Pick outfit if you're a solo builder or a small team who wants the whole product loop — brief, design, code, QA, review, pricing, copy — in a small plugin you can read end to end. Pick superpowers or gstack if you want stricter, hook-enforced engineering discipline and are fine with a bigger footprint.

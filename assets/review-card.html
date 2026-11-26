@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:880px;background:transparent}
+body{font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;color:#f3f1ea}
+.card{position:relative;overflow:hidden;background:#14161c;border:2px solid #3a3e48;border-radius:16px;padding:40px 44px 34px}
+.grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff0a 1px,transparent 1px),linear-gradient(90deg,#ffffff0a 1px,transparent 1px);background-size:40px 40px}
+.in{position:relative}
+.kicker{font:600 15px/1.3 "Avenir Next",Arial;letter-spacing:.12em;text-transform:uppercase;color:#ff7a3d}
+.meta{font:500 16px/1.4 "Avenir Next",Arial;color:#8d8a82;margin-top:8px}
+h2{font:700 27px/1.25 "Avenir Next",Arial;margin-top:28px;letter-spacing:-0.01em}
+h2 .tag{color:#ff7a3d}
+.rows{margin-top:22px;border-top:2px solid #3a3e48}
+.row{display:grid;grid-template-columns:170px 1fr;gap:20px;padding:16px 0;border-bottom:2px solid #3a3e48}
+.k{font:600 14px/1.6 "Avenir Next",Arial;letter-spacing:.1em;text-transform:uppercase;color:#ff7a3d;padding-top:2px}
+.v{font:500 19px/1.5 "Avenir Next",Arial;color:#e9e6dd;text-wrap:pretty}
+code{font:500 17px/1 Menlo,"SF Mono",monospace;background:#262a33;color:#f3f1ea;padding:2px 7px;border-radius:5px}
+.foot{font:600 16px/1.4 "Avenir Next",Arial;color:#c9c6bd;margin-top:24px}
+</style></head><body><div class="card"><div class="grid"></div><div class="in">
+<div class="kicker">What the review caught that no acceptance check did</div>
+<div class="meta">outfit benchmark, hard round, 2026-11-25 · found in 2 of 8 runs · rewritten in the 0.14.0 review format</div>
+<h2><span class="tag">Must fix · 1.</span> A damaged save file loads as an empty shop</h2>
+<div class="rows">
+<div class="row"><div class="k">What this is</div><div class="v">The store loads a saved JSON file and checks it for corruption.</div></div>
+<div class="row"><div class="k">Problem</div><div class="v">A version 1 save file with <code>orders: null</code> passes the check and loads as a shop with no orders, instead of being rejected as corrupt.</div></div>
+<div class="row"><div class="k">Fix</div><div class="v">Treat a missing or null orders list as a corrupt file and refuse to load it.</div></div>
+<div class="row"><div class="k">If we skip it</div><div class="v">The orders are gone with no error, so nobody knows the file was damaged.</div></div>
+</div>
+<div class="foot">Every acceptance check passed on this code. The review is what the extra cost buys.</div>
+</div></div></body></html>
