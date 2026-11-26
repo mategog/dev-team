@@ -2,9 +2,12 @@
 
 All notable changes. Versions follow semver; bump both `plugins/outfit/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.14.1 — 2026-11-26
+- **Only Must fix blocks.** `changes needed` now means a Must fix finding; Should fix and Nice to have findings are listed in the slice report for the owner to pick from and no longer start a fix round. A cheated check and an unmet done-check count as Must fix. Why: in a test the same day (17 small changes, each in a correct and a defective version, 255 Sonnet reviews, blind judges) the 0.14.0 reviewer asked for changes on 19 of 34 correct versions (56%), against 11 of 34 for a plain review prompt, for reasons such as "no tests", and every `changes needed` in a build starts a paid fix round. The same test found no advantage for the outfit reviewer in catching the planted defects: both it and the plain prompt named and blocked 48 of 51. Whether the new rule lowers the block rate has not been measured.
+
 ## 0.14.0 — 2026-11-26
 Ideas taken from [ponytail](https://github.com/DietrichGebert/ponytail) 5.3.3 (read 2026-11-26). None of this has been measured or run on a real build yet; ponytail's own numbers are its benchmark, not outfit's.
-- **Findings you can act on.** `review` (and `/outfit:review-pr`) write findings in plain English with four parts (what this is, problem, fix, if we skip it), grouped Must fix / Should fix / Nice to have and numbered across groups, so the owner can say "fix 2 and 5". `changes needed` means a Must or Should fix; Nice to have findings are listed but no longer start a fix round. The slice report keeps the numbers.
+- **Findings you can act on.** `review` (and `/outfit:review-pr`) write findings in plain English with four parts (what this is, problem, fix, if we skip it), grouped Must fix / Should fix / Nice to have and numbered across groups, so the owner can say "fix 2 and 5". `changes needed` means a Must or Should fix (changed in 0.14.1: only Must fix); Nice to have findings are listed but no longer start a fix round. The slice report keeps the numbers.
 - **Scale check.** Review judges code against the expected load (new `Expected load:` line in the profile's `## Codebase`, else the README or deploy config, and says which load it assumed).
 - **Shared code to reuse.** Setup's repo scan writes a `Shared code to reuse:` list (at most 15 lines) into `## Codebase`; the manager passes it in every builder brief and builders check it before writing anything new.
 - **Shortcut marker.** Builders mark a deliberate shortcut as `shortcut: <the limit>, <when to upgrade>`; review treats it as a decision unless the expected load crosses it, and `/outfit:status` counts the markers.

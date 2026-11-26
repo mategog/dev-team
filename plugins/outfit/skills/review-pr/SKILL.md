@@ -48,7 +48,7 @@ Ask the owner before running anything: it executes the PR author's code (name a 
 If a step is skipped (no yes, off the `Only:` list, not runnable), the report says so.
 
 ## 6. Report
-- **Verdict** (approve / changes needed / can't tell; changes needed when any finding is Must fix or Should fix), with "fix N first" when changes needed; goal source (PR / issue / commit messages / none); risk line with every trigger that fired.
+- **Verdict** (approve / changes needed / can't tell; changes needed only when a finding is Must fix), with "fix N first" when changes needed; goal source (PR / issue / commit messages / none); risk line with every trigger that fired.
 - **Findings:** re-read each against the code and grade it yourself, not the reviewer's grade. Group them **Must fix / Should fix / Nice to have** (skip empty groups) and number them once across all groups after merging; each finding: title with `file:line`, then What this is / Problem / Fix / If we skip it, in plain English.
 - **Promises:** met / missing / not verifiable, each with evidence.
 - **Review map:** what was read and what wasn't; for a very large diff, name what wasn't reviewed.

@@ -40,7 +40,7 @@ Re-read each finding against the code and grade it yourself, not the reviewer's 
 ## 4. Report
 - `What this repo does:` 2–3 sentences, and the load assumed (stated or inferred).
 - The findings from step 3.
-- `Verdict:` healthy when no finding is Must fix or Should fix; otherwise what to fix first.
+- `Verdict:` healthy when no finding is Must fix; otherwise what to fix first.
 - `Lean: -N lines possible` when there are needless-code findings.
 - `Not checked:` parts not read, tests not run, and why.
 
