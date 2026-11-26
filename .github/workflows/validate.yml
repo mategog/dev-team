@@ -15,6 +15,23 @@ jobs:
           b=$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)
           [ "$a" = "$b" ] || { echo "version mismatch: plugin.json=$a marketplace.json=$b"; exit 1; }
           grep -q "## $a " CHANGELOG.md || { echo "CHANGELOG.md has no entry for $a"; exit 1; }
+          m=$(jq -r .version mods/outfit-view/.claude-plugin/plugin.json)
+          n=$(jq -r '.plugins[] | select(.name == "outfit-view") | .version' .claude-plugin/marketplace.json)
+          [ "$m" = "$n" ] || { echo "outfit-view version mismatch: plugin.json=$m marketplace.json=$n"; exit 1; }
+      - name: Copied text stays the same in every copy
+        run: |
+          cd plugins/outfit/agents
+          [ "$(grep -l '^\*\*Project root:\*\*' *.md | wc -l)" -eq "$(ls *.md | wc -l)" ] || { echo "an agent lacks the Project root paragraph"; exit 1; }
+          [ "$(grep -h '^\*\*Project root:\*\*' *.md | sort -u | wc -l)" -eq 1 ] || { echo "the Project root paragraph differs between agents"; exit 1; }
+          section() { awk -v h="## $1" 'index($0, h) == 1 { p = 1; print; next } /^## / { p = 0 } p' "$2"; }
+          for h in "Clean code" "Output hygiene"; do
+            [ -n "$(section "$h" frontend.md)" ] || { echo "no '## $h' section in frontend.md"; exit 1; }
+            diff <(section "$h" frontend.md) <(section "$h" backend.md) || { echo "'$h' differs between frontend.md and backend.md"; exit 1; }
+          done
+          # The six risk triggers are worded for each reader; one phrase per trigger must stay in both.
+          for p in "tokens or other secrets" "access checks" "gift cards, invoices, payouts, even in a library or a prototype" "personal data of real people" "deleting or migrating stored data" "acting outside the app: publishing, sending messages"; do
+            grep -qF "$p" product.md && grep -qF "$p" manager.md || { echo "risk trigger \"$p\" missing in product.md or manager.md"; exit 1; }
+          done
       - name: Every agent and skill has name and description
         run: |
           for f in plugins/outfit/agents/*.md plugins/outfit/skills/*/SKILL.md; do

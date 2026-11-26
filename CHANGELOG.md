@@ -2,6 +2,18 @@
 
 All notable changes. Versions follow semver; bump both `plugins/outfit/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.14.0 — 2026-11-26
+Ideas taken from [ponytail](https://github.com/DietrichGebert/ponytail) 5.3.3 (read 2026-11-26). None of this has been measured or run on a real build yet; ponytail's own numbers are its benchmark, not outfit's.
+- **Findings you can act on.** `review` (and `/outfit:review-pr`) write findings in plain English with four parts (what this is, problem, fix, if we skip it), grouped Must fix / Should fix / Nice to have and numbered across groups, so the owner can say "fix 2 and 5". `changes needed` means a Must or Should fix; Nice to have findings are listed but no longer start a fix round. The slice report keeps the numbers.
+- **Scale check.** Review judges code against the expected load (new `Expected load:` line in the profile's `## Codebase`, else the README or deploy config, and says which load it assumed).
+- **Shared code to reuse.** Setup's repo scan writes a `Shared code to reuse:` list (at most 15 lines) into `## Codebase`; the manager passes it in every builder brief and builders check it before writing anything new.
+- **Shortcut marker.** Builders mark a deliberate shortcut as `shortcut: <the limit>, <when to upgrade>`; review treats it as a decision unless the expected load crosses it, and `/outfit:status` counts the markers.
+- **Builders' clean-code block** (the fallback without the ponytail skill) gains ponytail's never-cut line (trust-boundary validation, data-loss handling, security, accessibility), its test rule (a branch, loop, parser, money or security leaves one small test) and "grep every caller, fix the root cause once".
+- **`/outfit:audit`**: the team's review over a whole repo or folder, ranked, report only. **`/outfit:help`**: a one-screen reference. Both are new and not yet run.
+- `/outfit:build` re-reads `manager.md` if its text is gone from context (for example after a compaction).
+- **outfit-view 0.2.0**: see its README. The pane opens on the first agent rather than every session, each desk shows the result of the agent's own test runs, the pane shows the session's real spend since the first agent, and a Copy button copies the run as Markdown.
+- **Repo:** CI checks that copied text stays identical (the Project root paragraph in every agent, the Clean code and Output hygiene blocks, one phrase per risk trigger in product and manager) and that the mod's version matches the marketplace. CONTRIBUTING asks for a paired run before a behaviour change is called better. The README has a Numbers section, a real benchmark finding rewritten as a 0.14.0 review card, and installs in two separate prompts.
+
 ## 0.13.0 — 2026-11-26
 - **Renamed from dev-team to outfit.** "dev-team" sounded like engineers only; the plugin also covers product, design, marketing and finance. Commands are now `/outfit:setup`, `/outfit:build` and `/outfit:status`, agents are `outfit:product` … `outfit:finance`, the plugin installs as `outfit@outfit`, the mod is `outfit-view`, and build branches are `outfit/<feature>`. Nothing else changed. To move over: `/plugin uninstall dev-team@dev-team`, then `/plugin marketplace add mategog/outfit` and `/plugin install outfit@outfit`, and start a new session. Briefs, `company/profile.md` and existing `dev-team/<feature>` branches keep working: briefs store their own branch name. Entries below use the old name, including `/dev-team:review-pr`, which is now `/outfit:review-pr`.
 

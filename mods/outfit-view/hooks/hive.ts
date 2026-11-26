@@ -1,4 +1,4 @@
-import type { HiveAgent, HiveMessage } from '../types'
+import type { HiveAgent, HiveMessage, HiveTests } from '../types'
 
 const STATUS: Record<HiveAgent['status'], string> = {
   working: '#f5b301',
@@ -15,6 +15,15 @@ const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;') // the scrub refuses numeric references
 const cut = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + '…' : s)
 const f = (n: number) => +n.toFixed(1)
+
+// "✓ 13 tests", "✗ 2 failed", "tests stale": the agent's last test run.
+export const testsLabel = (t: HiveTests) =>
+  t.state === 'stale'
+    ? 'tests stale'
+    : t.state === 'pass'
+      ? t.passed === undefined ? '✓ tests pass' : `✓ ${t.passed} tests`
+      : t.failed === undefined ? '✗ tests fail' : `✗ ${t.failed} failed`
+const testsColor = (t: HiveTests) => (t.state === 'pass' ? STATUS.done : t.state === 'fail' ? STATUS.failed : DIM)
 
 // Known roles get distinct shirts; anything else a stable hash.
 function shirt(role: string) {
@@ -42,7 +51,7 @@ function layout(agents: HiveAgent[], messages: HiveMessage[], width: number): { 
   const pad = 12
   const gx = 14
   const gy = 24
-  const ch = 90
+  const ch = 104
   const s = 3 // sprite scale
   const n = agents.length
   const cols = Math.max(1, Math.floor((width - 2 * pad + gx) / (100 + gx)))
@@ -117,7 +126,8 @@ function layout(agents: HiveAgent[], messages: HiveMessage[], width: number): { 
     const c = STATUS[a.status] ?? DIM
     const role = a.type.replace(/^[^:]*:/, '')
     const working = a.status === 'working'
-    const tip = cut([a.type, a.task, a.status, a.lastTool ?? ''].join(' — '), 300)
+    const tests = a.tests ? testsLabel(a.tests) : ''
+    const tip = cut([a.type, a.task, a.status, a.lastTool ?? '', tests].join(' — '), 300)
     const line = working && a.lastTool ? `${a.status} · ${a.lastTool}` : a.status
     const glow = working
       ? '<rect x="4" y="7" width="8" height="4.5" fill="#fde68a"><animate attributeName="opacity" values=".3;1;.3" dur="1.6s" repeatCount="indefinite"/></rect>'
@@ -139,6 +149,7 @@ function layout(agents: HiveAgent[], messages: HiveMessage[], width: number): { 
         badge +
         text(cw / 2, 66, 10.5, TEXT, cut(role, 14), ' font-weight="600"') +
         text(cw / 2, 80, 9.5, c, cut(line, 16)) +
+        (a.tests ? text(cw / 2, 94, 9.5, testsColor(a.tests), cut(tests, 16)) : '') +
         '</g>',
     )
   }

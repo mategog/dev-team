@@ -11,8 +11,9 @@ Read, don't change anything. All paths are relative to the current project's roo
 - `design/**/*-spec.md` and `*-critique.md` — latest verdict per feature.
 - The last 10 lines of `company/decisions.md`.
 - For each repo in an unfinished brief's `repos:`: `git -C <path> status --short`, its branch, and the last 3 commits.
+- For each repo in any brief's `repos:`: count `shortcut:` markers with `git -C <path> grep -nE '(#|//|/[*]|--) ?shortcut:'`; report the count and any marker that names no upgrade trigger.
 
-Answer in under 15 lines:
+Answer in under 17 lines:
 - **Waiting on the owner:** `waiting-owner` and `draft` briefs (with `next:`), unanswered open questions, `changes needed` verdicts, and unticked owner checks — including on `done` briefs.
 - **In progress:** `approved`, `building`, `testing` — say they can be resumed with `/outfit:build`.
 - **Done**, **parked**, **stopped** (with the reason); `superseded` briefs as one count.

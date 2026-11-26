@@ -46,6 +46,20 @@ test('30 agents stay under the size limit, even with escape-heavy text', async (
   expect(svg.length).toBeLessThan(131072)
 })
 
+test('a desk shows its test run: pass, fail, stale', async () => {
+  const svg = hiveSvg(
+    [
+      agent('a1', 'outfit:qa', 'done', { tests: { state: 'pass', passed: 13 } }),
+      agent('a2', 'outfit:frontend', 'done', { tests: { state: 'fail', failed: 2 } }),
+      agent('a3', 'outfit:backend', 'working', { tests: { state: 'stale', passed: 4 } }),
+      agent('a4', 'outfit:review', 'done', { tests: { state: 'pass' } }),
+    ],
+    [],
+    700,
+  ).source
+  for (const s of ['>✓ 13 tests<', '>✗ 2 failed<', '>tests stale<', '>✓ tests pass<']) expect(svg).toContain(s)
+})
+
 test('a message to an unknown name does not throw or highlight', async () => {
   const svg = hiveSvg([agent('a1', 'outfit:qa', 'working')], [{ at: 1, from: 'main', to: 'nobody', kind: 'send', text: 'x' }], 360).source
   expect(svg).toContain('>qa<')

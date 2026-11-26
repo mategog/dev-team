@@ -18,7 +18,7 @@ disable-model-invocation: true
    - When should the team stop for the owner's review: after every slice, only on risky briefs, or never until the end? (Default: every slice.)
    - Optional, one question, ask it only if the owner brings up cost or models: a spend limit per brief and any model they want for a role (builders, slice reviews, qa, final review).
 
-   **3b. Engineer:** ask nothing about audience, brand or values; scan the repo for `## Codebase`: layout (main folders, entry points) and how to run, build and test; naming, error handling and test style; commit and branch style from `git log --oneline -30` and `git branch -a`; repo rules from CLAUDE.md, CONTRIBUTING and lint configs; fragile areas (no tests; `git log --name-only -50` shows files fixed again and again). Mark guesses **[unconfirmed]**; empty repo: "none yet" per item, never invent. Ask only about the design system, and only if there is a UI. Gates: the defaults unless the owner raises them. Then continue at step 4 with the engineer changes noted there.
+   **3b. Engineer:** ask nothing about audience, brand or values; scan the repo for `## Codebase`: layout (main folders, entry points) and how to run, build and test; naming, error handling and test style; commit and branch style from `git log --oneline -30` and `git branch -a`; repo rules from CLAUDE.md, CONTRIBUTING and lint configs; fragile areas (no tests; `git log --name-only -50` shows files fixed again and again); `Expected load:` from README or deploy config; `Shared code to reuse:` from `git ls-files` plus a grep for top-level exports/defs (shared folders such as utils, lib, services, components, hooks first; skip tests, generated and vendored code). Mark guesses **[unconfirmed]**; empty repo: "none yet" per item, never invent. Ask only about the design system, and only if there is a UI. Gates: the defaults unless the owner raises them. Then continue at step 4 with the engineer changes noted there.
 4. Write `company/profile.md` with these sections (leave out `## Budget` and `## Models` unless the owner gave values; never invent them), filling in what you found and heard, and marking guesses **[unconfirmed]**:
 
 ```markdown
@@ -37,7 +37,9 @@ Rules every agent follows (budget, privacy, no hype, ...).
 Languages, frameworks, how to run, build and test, where the apps live (each repo's folder, relative to this root).
 
 ## Codebase
-Written when the repo has code, and always on the engineer path ("none yet" per item on an empty repo). Layout, conventions seen in the code, commit and branch style (describe patterns only, never author names or emails), repo rules, fragile areas.
+Written when the repo has code (same scan as step 3b), and always on the engineer path ("none yet" per item on an empty repo). Layout, conventions seen in the code, commit and branch style (describe patterns only, never author names or emails), repo rules, fragile areas.
+Expected load: <who uses it and how many at once, e.g. "one person, local CLI" or "~200 users at once, web">
+Shared code to reuse: <at most 15 lines `folder/: name, name, name` of existing helpers, components and services new code should reuse>
 
 ## Design system
 Skill name to load (e.g. `my-app-design`) or tokens file path. Fonts, colours, components to reuse.
