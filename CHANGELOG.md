@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow semver; bump both `plugins/dev-team/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` together.
 
+## 0.12.0 — 2026-11-26
+- **`/dev-team:review-pr`.** The team's review applied to someone else's PR or branch: it reads the PR in a detached worktree (read-only until you say yes to running its code), maps the PR's promises to the diff, runs the strongest-model plus default review on the six risk triggers, and reports a verdict, graded findings and a review text for you to paste. Report only: it never posts, edits or merges, never touches your checkout, reads your profile from your repo rather than the PR, and asks before running the author's code. Not yet run on a real PR.
+
 ## 0.11.0 — 2026-11-26
 - **Engineer mode.** `/dev-team:setup` asks new profiles whether you own the product or are an engineer on an existing codebase; the engineer path skips brand, audience and values and scans the repo into `## Codebase` (commit style without author names). It writes `Only: product, manager, designer, frontend, backend, qa, review` under `## Teams in use` (no designer when there is no UI); product and manager skip off-list teams, and only an `Only:` line restricts, so existing profiles are unchanged. Not yet run on a real build.
 

@@ -8,7 +8,7 @@
 
 **dev-team is an open-source Claude Code plugin that adds nine specialized subagents — product owner, manager, designer, frontend, backend, QA, code review, marketing and finance — and runs them as one end-to-end workflow:** a one-page brief you approve, then design, build, QA, code review and a local git commit. It's built for solo developers and small teams who want the whole product loop, not just coding.
 
-Markdown only. No hooks, no scripts, no telemetry, and no network calls from the plugin itself (the product, marketing and finance agents use web search for research). 9 agents + 3 commands, about 900 tokens added to each session. The optional team view is a separate [mod](../../mods/dev-team-view/README.md), not part of the plugin.
+Markdown only. No hooks, no scripts, no telemetry, and no code of its own that makes network calls (the product, marketing and finance agents use web search for research; `/dev-team:review-pr` reads GitHub through your own `gh` and `git`). 9 agents + 4 commands, about 900 tokens added to each session. The optional team view is a separate [mod](../../mods/dev-team-view/README.md), not part of the plugin.
 
 ## Quick start
 
@@ -81,6 +81,7 @@ A separate mod, [`dev-team-view`](../../mods/dev-team-view/README.md), adds a li
 | `/dev-team:setup` | Asks a few questions and writes `company/profile.md`: product, brand, values, stack, design system. Every agent reads it first. |
 | `/dev-team:build <idea>` | The whole pipeline above. Resumes an unfinished build if there is one. |
 | `/dev-team:status` | What's in progress, done, stopped, and waiting on you. |
+| `/dev-team:review-pr <PR number, URL or branch>` | Reviews someone else's PR in a separate worktree and reports: verdict, graded findings, promises met or missing, a review text to paste. Never posts or edits. |
 
 **Engineer mode.** `/dev-team:setup` first asks whether you own the product or work on an existing codebase. Engineers skip the brand, audience and values questions: setup scans the repo and writes a `## Codebase` section (layout, how to run and test, conventions, commit style, fragile areas) and an `Only:` line under `## Teams in use` naming product, manager, designer (only when there is a UI), frontend, backend, qa and review. Only an `Only:` line restricts: product and manager skip off-list teams, while a direct call ("use dev-team:finance ...") is not blocked. Existing profiles are unchanged.
 
@@ -172,8 +173,8 @@ Checked 2026-11-09 by reading each project's files. Stars change; strengths don'
 | Test-first rule | bug fixes only | always (strict) | yes | bug fixes | — |
 | Hard enforcement (hooks) | none | session-start hook | none | several | none |
 | Deploy / release automation | no (by design) | finish branch | no | yes | no |
-| Footprint | 12 agent/skill files, all markdown | large | very large, installer | very large, installer | small |
-| Network / telemetry | web search by research agents only | version-reporting logo (can be turned off) | update checks | opt-in telemetry | none |
+| Footprint | 13 agent/skill files, all markdown | large | very large, installer | very large, installer | small |
+| Network / telemetry | web search by research agents; `review-pr` uses your own `gh` and `git` | version-reporting logo (can be turned off) | update checks | opt-in telemetry | none |
 
 Pick dev-team if you're a solo builder or a small team who wants the whole product loop — brief, design, code, QA, review, pricing, copy — in a small plugin you can read end to end. Pick superpowers or gstack if you want stricter, hook-enforced engineering discipline and are fine with a bigger footprint.
 
@@ -208,6 +209,9 @@ Yes. `/dev-team:build` replaces superpowers' brainstorming and planning for that
 
 ### Do I need the recommended skills?
 No. Without them the agents still work; they lose the extra guidance those skills add (for example ponytail's "smallest change" rules or the pricing frameworks).
+
+### How do I review someone else's PR?
+Run `/dev-team:review-pr <number, URL or branch>`: the team's review in a separate worktree, report only, nothing posted to GitHub. Compare with the built-in `/code-review`, which is not tied to your profile or the team's risk rules.
 
 ### What happens if a build is interrupted?
 Each brief stores its status, next step, and each repo's branch and starting commit; its plan and log sit beside it. Run `/dev-team:build` again and it offers to resume where it stopped.
